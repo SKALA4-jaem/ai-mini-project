@@ -1,0 +1,24 @@
+{"id": "B01", "set": "base", "query": "payments-service 결제 응답이 느려지고 CPU가 치솟았어요, 원인 확인해주세요", "route": "incident", "targets": ["payments-service"], "types": ["cpu-spike"], "allowed_types": ["high-latency"]}
+{"id": "B02", "set": "base", "query": "cache-service 메모리 사용률이 계속 올라가고 있어요", "route": "incident", "targets": ["cache-service"], "types": ["memory-leak"]}
+{"id": "B03", "set": "base", "query": "log-service 디스크 공간이 부족하다는 알림이 왔어요", "route": "incident", "targets": ["log-service"], "types": ["disk-full"]}
+{"id": "B04", "set": "base", "query": "gateway-service에서 payments-service로 가는 요청이 타임아웃 나고 있어요", "route": "incident", "targets": ["gateway-service", "payments-service"], "types": ["network-timeout"], "allowed_types": ["cpu-spike"]}
+{"id": "B05", "set": "base", "query": "web-01 CPU 급증, auth-service 커넥션 풀도 같이 확인해줘", "route": "incident", "targets": ["web-01", "auth-service"], "types": ["high-latency"], "allowed_types": ["cpu-spike"]}
+{"id": "B06", "set": "base", "query": "payments-service랑 cache-service 둘 다 저하됐는데 공통 원인이 있는지 분석해줘", "route": "incident", "targets": ["payments-service", "cache-service"], "types": ["cpu-spike", "memory-leak"]}
+{"id": "B07", "set": "base", "query": "로그인 응답이 느려요, 원인 확인해주세요", "route": "incident", "targets": ["auth-service"], "types": ["high-latency"]}
+{"id": "B08", "set": "base", "query": "billing-service 응답이 느려요", "route": "incident", "targets": ["billing-service"], "types": [], "allowed_types": ["high-latency"], "note": "모니터링 대상이 아닌 시스템 — 다른 시스템을 대신 조사하면 오답"}
+{"id": "N01", "set": "natural", "query": "결제가 자꾸 실패하고 너무 느려요", "route": "incident", "targets": ["payments-service"], "types": ["cpu-spike"], "allowed_types": ["high-latency"]}
+{"id": "N02", "set": "natural", "query": "캐시 서버 메모리가 계속 차오르고 있어요", "route": "incident", "targets": ["cache-service"], "types": ["memory-leak"]}
+{"id": "N03", "set": "natural", "query": "API 게이트웨이에서 504가 계속 떠요", "route": "incident", "targets": ["gateway-service"], "types": ["network-timeout"]}
+{"id": "N04", "set": "natural", "query": "로그 저장 서버 용량이 꽉 찼대요", "route": "incident", "targets": ["log-service"], "types": ["disk-full"]}
+{"id": "E01", "set": "extended", "query": "order-service 배포하고 나서 에러가 엄청 나요", "route": "incident", "targets": ["order-service"], "types": ["error-rate-spike"]}
+{"id": "E02", "set": "extended", "query": "search-service 검색이 자꾸 죽어요", "route": "incident", "targets": ["search-service"], "types": ["memory-leak"]}
+{"id": "E03", "set": "extended", "query": "notification-service 푸시 발송이 안 돼요", "route": "incident", "targets": ["notification-service"], "types": ["cert-expiry"]}
+{"id": "E04", "set": "extended", "query": "주문하기 버튼 누르면 500 에러가 떠요", "route": "incident", "targets": ["order-service"], "types": ["error-rate-spike"]}
+{"id": "E05", "set": "extended", "query": "상품 검색이 멈췄어요, 확인 부탁해요", "route": "incident", "targets": ["search-service"], "types": ["memory-leak"]}
+{"id": "E06", "set": "extended", "query": "푸시 알림이 하나도 안 와요", "route": "incident", "targets": ["notification-service"], "types": ["cert-expiry"]}
+{"id": "E07", "set": "extended", "query": "order-service랑 notification-service 같이 이상해요, 확인해주세요", "route": "incident", "targets": ["order-service", "notification-service"], "types": ["error-rate-spike", "cert-expiry"]}
+{"id": "E08", "set": "extended", "query": "cache-service랑 search-service 둘 다 메모리 문제 같은데 확인해줘", "route": "incident", "targets": ["cache-service", "search-service"], "types": ["memory-leak"]}
+{"id": "C01", "set": "chat", "query": "안녕, 너는 누구야?", "route": "chat"}
+{"id": "C02", "set": "chat", "query": "오늘 점심 뭐 먹을까?", "route": "chat"}
+{"id": "C03", "set": "chat", "query": "제 이름은 민수입니다", "route": "chat"}
+{"id": "C04", "set": "chat", "query": "고마워요, 덕분에 잘 해결됐어요", "route": "chat"}
