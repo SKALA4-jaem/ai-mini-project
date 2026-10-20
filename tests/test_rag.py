@@ -99,3 +99,12 @@ async def test_system_resolver(tmp_path):
     resolved, _ = await SystemResolver(kb).resolve("푸시 알림 발송이 안 돼요")
     assert resolved["system"] == "notification-service"
     assert (await SystemResolver(kb, min_score=0.99).resolve("푸시 알림"))[0] is None
+
+
+async def test_rag_classifier_skips_when_only_unknown_systems(tmp_path):
+    kb = KnowledgeBase(HashEmbedder(), index_dir=tmp_path)
+    await kb.build()
+    verdicts, _ = await RagIncidentClassifier(kb).classify(
+        "billing-service 응답이 느려요",
+        [_mon("billing-service", ["System 'billing-service' not found"], status="unknown")])
+    assert verdicts == []   # 질문 문장만으로 runbook을 지어 붙이지 않는다

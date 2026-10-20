@@ -58,11 +58,16 @@ class RagIncidentClassifier:
 
     @traceable(name="classify.rag")
     async def classify(self, query: str, collected: list[dict]) -> tuple[list[dict], dict]:
+        monitored = [d for d in _monitoring(collected) if d.get("status") != "unknown"]
+        if collected and not monitored:
+            # 조사한 시스템이 전부 모니터링 미등록(status=unknown)이면 근거가 없다 — 질문
+            # 문장만으로 runbook을 붙이면 존재하지 않는 시스템에 롤백 등을 권하게 된다
+            # (평가에서 billing-service 질의로 실측된 사례).
+            return [], {"usd": 0.0, "tokens": 0, "latency_ms": 0.0}
         # 알림이 있는(=이상 징후가 있는) 시스템마다 질의 1개. 그런 시스템이 하나도 없으면
         # 사용자가 쓴 증상 문장 자체로 검색한다.
         probes = [(d["system_name"], "; ".join(d["alerts"]))
-                  for d in _monitoring(collected)
-                  if d.get("alerts") and d.get("status") != "unknown"]
+                  for d in monitored if d.get("alerts")]
         if not probes:
             probes = [(None, query)]
         started = time.perf_counter()

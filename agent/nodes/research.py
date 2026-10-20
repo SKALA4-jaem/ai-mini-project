@@ -76,6 +76,10 @@ async def replan_check_node(state: AgentState, deps: SupervisorDeps) -> dict:
         return {"events": state["events"] + [verdict]}
     classifier = deps.incident_classifier or KeywordIncidentClassifier()
     verdicts, usage = await classifier.classify(state["query"], state.get("collected", []))
+    if not verdicts:   # 판별 근거 없음(예: 미등록 시스템뿐) — runbook 없이 작성 단계로
+        verdict = {"type": "ReplanCheck", "round": rounds, "is_sufficient": True,
+                   "classifier": classifier.name, "reason": "판별 근거 없음 — runbook 생략"}
+        return {"incident_types": [], "events": state["events"] + [verdict]}
     gap_tasks = [{"id": f"task-gap-runbook-{i}", "agent": "research", "kind": "runbook",
                   "target": v["incident_type"], "status": "pending"}
                  for i, v in enumerate(verdicts)]

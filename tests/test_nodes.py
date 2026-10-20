@@ -77,3 +77,9 @@ async def test_validate_passes_after_max_attempts(make_deps):
     out = await validate_node(_state(draft="짧음", validation_attempts=MAX_VALIDATION_ATTEMPTS - 1),
                               make_deps())
     assert out["validation_feedback"] is None and "최대 시도" in out["events"][-1]["verdict"]
+
+
+async def test_replan_without_verdicts_goes_straight_to_write(make_deps):
+    deps = make_deps(incident_classifier=StubClassifier([]))
+    out = await replan_check_node(_state(tasks=[], collected=[]), deps)
+    assert out["events"][-1]["is_sufficient"] is True and "tasks" not in out
