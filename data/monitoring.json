@@ -3,7 +3,10 @@
     "status": "degraded",
     "cpu_base": 78.0,
     "memory_base": 61.0,
-    "alerts": ["p95 latency 2.4s (threshold 1.0s)", "connection pool 92% used"]
+    "alerts": [
+      "p95 latency 2.4s (threshold 1.0s)",
+      "connection pool 92% used"
+    ]
   },
   "web-01": {
     "status": "healthy",
@@ -15,24 +18,63 @@
     "status": "degraded",
     "cpu_base": 91.0,
     "memory_base": 55.0,
-    "alerts": ["CPU 91% (threshold 80%)", "payments-service-3 instance responding slow"]
+    "alerts": [
+      "CPU 91% (threshold 80%)",
+      "payments-service-3 instance responding slow"
+    ]
   },
   "cache-service": {
     "status": "degraded",
     "cpu_base": 42.0,
     "memory_base": 89.0,
-    "alerts": ["memory usage climbing steadily over 6h", "heap near limit"]
+    "alerts": [
+      "memory usage climbing steadily over 6h",
+      "heap near limit"
+    ]
   },
   "gateway-service": {
     "status": "degraded",
     "cpu_base": 30.0,
     "memory_base": 45.0,
-    "alerts": ["upstream timeout to payments-service (504)", "network packet loss 3%"]
+    "alerts": [
+      "upstream timeout to payments-service (504)",
+      "network packet loss 3%"
+    ]
   },
   "log-service": {
     "status": "degraded",
     "cpu_base": 20.0,
     "memory_base": 35.0,
-    "alerts": ["disk usage 95% on /var/log", "disk space low"]
+    "alerts": [
+      "disk usage 95% on /var/log",
+      "disk space low"
+    ]
+  },
+  "order-service": {
+    "status": "degraded",
+    "cpu_base": 55.0,
+    "memory_base": 60.0,
+    "alerts": [
+      "HTTP 5xx error rate 12% (threshold 1%)",
+      "error spike began right after deploy v2.3.1"
+    ]
+  },
+  "search-service": {
+    "status": "degraded",
+    "cpu_base": 64.0,
+    "memory_base": 93.0,
+    "alerts": [
+      "GC pause 1.8s, old gen 94% retained",
+      "worker-2 OOM killed (exit 137)"
+    ]
+  },
+  "notification-service": {
+    "status": "degraded",
+    "cpu_base": 25.0,
+    "memory_base": 40.0,
+    "alerts": [
+      "TLS handshake failures 340/min",
+      "certificate for push.example.com expires in 2 days"
+    ]
   }
 }
