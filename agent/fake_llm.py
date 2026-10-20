@@ -8,6 +8,8 @@ import re
 
 from langsmith import traceable
 
+from .keywords import looks_like_incident
+
 
 class FakeLLM:
     def __init__(self, name: str, usd_per_1k_tokens: float):
@@ -26,7 +28,7 @@ class FastLLM(FakeLLM):
     @traceable(run_type="llm", name="fast_llm.route")
     def route(self, query: str) -> tuple[dict, dict]:
         """Wave 5 — 쿼리 라우팅. 장애 관련이면 incident 파이프라인, 아니면 chat 직행."""
-        incident = bool(re.search(r"장애|진단|다운|지연|급증|incident|티켓", query))
+        incident = looks_like_incident(query)
         result = {"route": "incident" if incident else "chat", "needs_analysis": False}
         return result, self._usage(query, str(result))
 

@@ -6,6 +6,8 @@
 - Wave 3  : GET /chat/stream — 그래프 실행 과정을 SSE 이벤트로 스트리밍
 - Wave 12 : 대화 이력을 SQLite(session.db)에 저장 — 재시작해도 유지
 - Wave 14 : SUPERVISOR_VERSION(v1/v2) 환경변수로 legacy/신형 파이프라인 즉시 전환
+- RAG     : lifespan에서 runbook/시스템 카탈로그를 1회 인덱싱 — INCIDENT_CLASSIFIER(keyword|rag)로
+            개선 전/후 판별기를 재배포 없이 전환
 - LangSmith: 요청당 chat_request 루트 run 아래로 노드·LLM·MCP 호출이 계층 기록됨
 """
 import json
@@ -22,10 +24,13 @@ from langsmith import traceable
 from langsmith.run_helpers import get_current_run_tree
 from pydantic import BaseModel
 
+from agent.classifier import (KeywordIncidentClassifier, RagIncidentClassifier,
+                              SystemResolver)
 from agent.deps import SupervisorDeps
 from agent.fake_llm import FastLLM, QualityLLM
 from agent.graph import build_graph
 from agent.mcp_client import MCPClient
+from agent.rag import HashEmbedder, KnowledgeBase, OpenAIEmbedder
 from agent.session_store import SqliteSessionStore
 from agent.supervisor_v1 import run_v1
 
@@ -59,6 +64,26 @@ def _build_llms():
     return backend, fast, quality
 
 
+async def _build_classifiers(backend: str):
+    """INCIDENT_CLASSIFIER=rag(기본)|keyword. rag면 지식베이스를 만들어 판별기·시스템 해석기에
+    같이 주입한다. 임베더는 EMBEDDING_BACKEND(openai|hash)로 고르며, 지정하지 않으면
+    LLM_BACKEND=openai일 때만 openai를 쓴다(fake/ollama는 과금 없는 hash)."""
+    mode = os.environ.get("INCIDENT_CLASSIFIER", "rag")
+    if mode == "keyword":
+        return mode, KeywordIncidentClassifier(), None, {}
+    embed_backend = os.environ.get("EMBEDDING_BACKEND",
+                                   "openai" if backend == "openai" else "hash")
+    embedder = (OpenAIEmbedder(os.environ.get("OPENAI_EMBED_MODEL", "text-embedding-3-small"))
+                if embed_backend == "openai" else HashEmbedder())
+    kb = KnowledgeBase(embedder)
+    build_info = await kb.build()
+    classifier = RagIncidentClassifier(
+        kb, min_score=float(os.environ.get("RAG_MIN_SCORE", "0.0")))
+    resolver = SystemResolver(
+        kb, min_score=float(os.environ.get("RESOLVER_MIN_SCORE", "0.0")))
+    return mode, classifier, resolver, {"embedder": embedder.name, **build_info}
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     global CREATION_COUNT
@@ -67,12 +92,17 @@ async def lifespan(app: FastAPI):
     await mcp.start()   # Wave 2 — MCP subprocess는 서버 수명 동안 딱 1개
     backend, fast_llm, quality_llm = _build_llms()
     app.state.llm_backend = backend
+    classifier_mode, classifier, resolver, rag_info = await _build_classifiers(backend)
+    app.state.rag_info = {"incident_classifier": classifier_mode, **rag_info}
     deps = SupervisorDeps(
         fast_llm=fast_llm,
         quality_llm=quality_llm,
         mcp=mcp,
         session_store=SqliteSessionStore(),
         version=os.environ.get("SUPERVISOR_VERSION", "v2"),
+        incident_classifier=classifier,
+        system_resolver=resolver,
+        grounding_check=os.environ.get("VALIDATE_GROUNDING", "1") == "1",
     )
     app.state.deps = deps
     app.state.graph = build_graph(deps) if deps.version == "v2" else None
@@ -97,7 +127,9 @@ async def health():
             "supervisor_version": app.state.deps.version,
             "llm_backend": app.state.llm_backend,
             "fast_llm": app.state.deps.fast_llm.name,
-            "quality_llm": app.state.deps.quality_llm.name}
+            "quality_llm": app.state.deps.quality_llm.name,
+            "grounding_check": app.state.deps.grounding_check,
+            **app.state.rag_info}
 
 
 @app.get("/version")
@@ -111,6 +143,8 @@ def _metadata(result: dict, run_id: str | None) -> dict:
         "task_count": len(result.get("tasks", [])),
         "gate_removed": result.get("gate_removed", 0),
         "replan_rounds": result.get("replan_rounds", 0),
+        "incident_types": [v["incident_type"] for v in result.get("incident_types", [])],
+        "resolved_system": result.get("resolved_system"),
         "retry_count": result.get("retry_count", 0),
         "parallel_elapsed": result.get("parallel_elapsed"),
         "validation_attempts": result.get("validation_attempts", 0),

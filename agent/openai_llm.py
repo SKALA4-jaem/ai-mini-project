@@ -21,45 +21,16 @@ OpenAI 계정에 실제 비용이 청구된다(run_openai.sh 실행 전 반드�
 import json
 import os
 import re
-from pathlib import Path
 
 import httpx
 from langsmith import traceable
 
+from .keywords import looks_like_incident
+from .systems import KNOWN_SYSTEMS
+from .systems import guess_target as _guess_target
+from .systems import guess_targets as _guess_targets
+
 OPENAI_URL = "https://api.openai.com/v1/chat/completions"
-
-
-def _load_known_systems() -> set[str]:
-    """KNOWN_SYSTEMS를 data/monitoring.json의 실제 시스템 키들로 동적으로 맞춘다 —
-    하드코딩된 2개짜리 목록이 모니터링 데이터와 어긋나던 문제(payments/cache/gateway/
-    log-service 미인식) 수정."""
-    path = Path(__file__).resolve().parent.parent / "data" / "monitoring.json"
-    try:
-        return set(json.loads(path.read_text()).keys())
-    except (OSError, json.JSONDecodeError):
-        return {"auth-service", "web-01"}
-
-
-KNOWN_SYSTEMS = _load_known_systems()
-
-
-def _guess_target(query: str) -> str:
-    """plan()의 코드 레벨 정규화에서 쓰는 안전망 — 모델이 target을 아예 안 내놓거나
-    오타를 내놓으면, 하드코딩된 "auth-service"로 덮어쓰는 대신 KNOWN_SYSTEMS 멤버십
-    매칭으로 쿼리에서 실제 시스템명을 다시 찾는다(W6 정신: 모델 출력을 그대로 믿지
-    않고 코드가 보정). 아무것도 안 걸리면 auth-service로 폴백."""
-    matches = [(query.index(s), s) for s in KNOWN_SYSTEMS if s in query]
-    return min(matches)[1] if matches else "auth-service"
-
-
-def _guess_targets(query: str) -> list[str]:
-    """research task가 통째로 0개일 때(모델이 agent=analysis만 던지는 등 계획 자체가
-    붕괴됐을 때) 쓰는 복구용 — _guess_target처럼 하나만 고르면 쿼리에 언급된 다른
-    시스템이 조사에서 통째로 빠지고, write 단계가 그 빈 자리를 수치까지 지어내서
-    채우는 할루시네이션으로 이어진다(실측 사례: cache-service 미조사 → "CPU 53.5%"
-    조작). 쿼리에 등장하는 KNOWN_SYSTEMS 전부를 복구한다."""
-    matched = sorted(s for s in KNOWN_SYSTEMS if s in query)
-    return matched or ["auth-service"]
 
 
 ROUTE_INSTRUCTIONS = (
@@ -124,7 +95,7 @@ class OpenAIFastLLM(OpenAILLM):
         except (json.JSONDecodeError, AttributeError):
             # JSON 모드는 "유효한 JSON"만 보장할 뿐 스키마까지 강제하진 않으므로,
             # 필드 누락·오탐 시 코드 레벨 fallback을 둔다(W6 정신, ollama_llm.py와 동일).
-            incident = bool(re.search(r"장애|진단|다운|지연|급증|incident|티켓", query))
+            incident = looks_like_incident(query)
             result = {"route": "incident" if incident else "chat",
                       "needs_analysis": False}
         return result, usage
@@ -135,7 +106,7 @@ class OpenAIFastLLM(OpenAILLM):
                   "실행 계획(tasks)을 JSON으로 세워라. "
                   "사용자 요청에 등장한 시스템마다 agent=research task를 하나씩 세워라 "
                   f"(알려진 시스템: {', '.join(sorted(KNOWN_SYSTEMS))} — 특정 시스템이 "
-                  "언급되지 않았으면 auth-service를 기본으로 조사하라). "
+                  "언급되지 않았으면 표준 절차의 '시스템' 항목을 조사하라). "
                   "패턴 분석이 꼭 필요하다고 판단되면 agent=analysis task를 추가해도 된다. "
                   + PLAN_INSTRUCTIONS)
         user = f"## 표준 절차\n{procedure_prompt}\n\n## 사용자 요청\n{query}"

@@ -12,47 +12,16 @@ fc
 """
 import json
 import re
-from pathlib import Path
 
 import httpx
 from langsmith import traceable
 
+from .keywords import looks_like_incident
+from .systems import KNOWN_SYSTEMS
+from .systems import guess_target as _guess_target
+from .systems import guess_targets as _guess_targets
+
 OLLAMA_URL = "http://127.0.0.1:11434/api/chat"
-
-
-def _load_known_systems() -> set[str]:
-    """KNOWN_SYSTEMS를 data/monitoring.json의 실제 시스템 키들로 동적으로 맞춘다 —
-    하드코딩된 2개짜리 목록이 모니터링 데이터와 어긋나던 문제(payments/cache/gateway/
-    log-service 미인식) 수정."""
-    path = Path(__file__).resolve().parent.parent / "data" / "monitoring.json"
-    try:
-        return set(json.loads(path.read_text()).keys())
-    except (OSError, json.JSONDecodeError):
-        return {"auth-service", "web-01"}
-
-
-KNOWN_SYSTEMS = _load_known_systems()
-
-
-def _guess_target(query: str) -> str:
-    """plan()의 코드 레벨 정규화에서 쓰는 안전망 — 소형 모델(fast_llm, 이전 기본값
-    qwen2.5:0.5b에서 실측된 사례)이 target을
-    아예 안 내놓거나(예: agent=analysis만 던지고 research task를 하나도 안 만듦) 오타
-    (예: "payment_service")를 내놓으면, 하드코딩된 "auth-service"로 덮어쓰는 대신
-    KNOWN_SYSTEMS 멤버십 매칭으로 쿼리에서 실제 시스템명을 다시 찾는다(W6 정신:
-    모델 출력을 그대로 믿지 않고 코드가 보정). 아무것도 안 걸리면 auth-service로 폴백."""
-    matches = [(query.index(s), s) for s in KNOWN_SYSTEMS if s in query]
-    return min(matches)[1] if matches else "auth-service"
-
-
-def _guess_targets(query: str) -> list[str]:
-    """research task가 통째로 0개일 때(모델이 agent=analysis만 던지는 등 계획 자체가
-    붕괴됐을 때) 쓰는 복구용 — _guess_target처럼 하나만 고르면 쿼리에 언급된 다른
-    시스템이 조사에서 통째로 빠지고, write 단계가 그 빈 자리를 수치까지 지어내서
-    채우는 할루시네이션으로 이어진다(실측 사례: cache-service 미조사 → "CPU 53.5%"
-    조작). 쿼리에 등장하는 KNOWN_SYSTEMS 전부를 복구한다."""
-    matched = sorted(s for s in KNOWN_SYSTEMS if s in query)
-    return matched or ["auth-service"]
 
 
 ROUTE_SCHEMA = {
@@ -162,7 +131,7 @@ class OllamaFastLLM(OllamaLLM):
                       "needs_analysis": bool(raw.get("needs_analysis", False))}
         except (json.JSONDecodeError, AttributeError):
             # 소형 모델의 형식 붕괴 대비 — 코드 레벨 fallback (W6 정신)
-            incident = bool(re.search(r"장애|진단|다운|지연|급증|incident|티켓", query))
+            incident = looks_like_incident(query)
             result = {"route": "incident" if incident else "chat",
                       "needs_analysis": False}
         return result, usage
@@ -173,7 +142,7 @@ class OllamaFastLLM(OllamaLLM):
                   "실행 계획(tasks)을 JSON으로 세워라. "
                   "사용자 요청에 등장한 시스템마다 agent=research task를 하나씩 세워라 "
                   f"(알려진 시스템: {', '.join(sorted(KNOWN_SYSTEMS))} — 특정 시스템이 "
-                  "언급되지 않았으면 auth-service를 기본으로 조사하라). "
+                  "언급되지 않았으면 표준 절차의 '시스템' 항목을 조사하라). "
                   "패턴 분석이 꼭 필요하다고 판단되면 agent=analysis task를 추가해도 된다.")
         user = f"## 표준 절차\n{procedure_prompt}\n\n## 사용자 요청\n{query}"
         content, usage = self._chat(system, user, schema=PLAN_SCHEMA)

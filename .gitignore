@@ -3,3 +3,5 @@
 session.db
 __pycache__/
 *.log
+data/vector_index/
+.pytest_cache/

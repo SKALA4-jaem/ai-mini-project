@@ -15,3 +15,6 @@ class SupervisorDeps:
     mcp: Any             # Wave 2  — MCP stdio 클라이언트 (Tool/Resource/Prompt)
     session_store: Any   # Wave 12 — SQLite 세션 저장소
     version: str         # Wave 14 — SUPERVISOR_VERSION (v1/v2)
+    incident_classifier: Any = None   # replan_check의 runbook 판별기 (keyword/rag)
+    system_resolver: Any = None       # 시스템명 미언급 질의 해석기 (rag 모드에서만)
+    grounding_check: bool = False     # validate가 답변 속 수치의 출처까지 검사할지
