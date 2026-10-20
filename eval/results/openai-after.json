@@ -1,0 +1,766 @@
+{
+  "label": "openai-after",
+  "project": "/Users/nys/workspace/ai-mini-project-2/all_total_vue_student",
+  "config": {
+    "LLM_BACKEND": "openai",
+    "INCIDENT_CLASSIFIER": null,
+    "EMBEDDING_BACKEND": null,
+    "VALIDATE_GROUNDING": null,
+    "OPENAI_FAST_MODEL": null,
+    "OPENAI_QUALITY_MODEL": null
+  },
+  "health": {
+    "status": "ok",
+    "instance_id": 4513336688,
+    "creation_count": 1,
+    "supervisor_version": "v2",
+    "llm_backend": "openai",
+    "fast_llm": "openai:gpt-4o-mini",
+    "quality_llm": "openai:gpt-4o",
+    "grounding_check": true,
+    "incident_classifier": "rag",
+    "embedder": "openai:text-embedding-3-small",
+    "docs": 55,
+    "cache_hit": true,
+    "usd": 0.0
+  },
+  "summary": {
+    "n": 24,
+    "route_acc": 0.9583,
+    "target_recall": 0.95,
+    "target_precision": 1.0,
+    "type_recall": 0.8421,
+    "type_precision": 0.9167,
+    "ungrounded_rate": 0.0,
+    "latency_s_mean": 4.5191,
+    "latency_s_incident_mean": 5.0893,
+    "cost_usd_total": 0.068032,
+    "validation_attempts_mean": 1,
+    "retry_total": 1,
+    "judge_numeric_mean": 4.9474,
+    "judge_action_mean": 5
+  },
+  "by_set": {
+    "base": {
+      "n": 8,
+      "route_acc": 1.0,
+      "target_recall": 1.0,
+      "target_precision": 1.0,
+      "type_recall": 0.8571,
+      "type_precision": 0.9286,
+      "ungrounded_rate": 0.0,
+      "latency_s_mean": 5.4776,
+      "latency_s_incident_mean": 5.4776,
+      "cost_usd_total": 0.028254,
+      "validation_attempts_mean": 1,
+      "retry_total": 1,
+      "judge_numeric_mean": 4.875,
+      "judge_action_mean": 5
+    },
+    "natural": {
+      "n": 4,
+      "route_acc": 1.0,
+      "target_recall": 1.0,
+      "target_precision": 1.0,
+      "type_recall": 0.75,
+      "type_precision": 0.75,
+      "ungrounded_rate": 0.0,
+      "latency_s_mean": 4.8005,
+      "latency_s_incident_mean": 4.8005,
+      "cost_usd_total": 0.012825,
+      "validation_attempts_mean": 1,
+      "retry_total": 0,
+      "judge_numeric_mean": 5,
+      "judge_action_mean": 5
+    },
+    "extended": {
+      "n": 8,
+      "route_acc": 0.875,
+      "target_recall": 0.875,
+      "target_precision": 1.0,
+      "type_recall": 0.875,
+      "type_precision": 1.0,
+      "ungrounded_rate": 0.0,
+      "latency_s_mean": 4.8455,
+      "latency_s_incident_mean": 4.8455,
+      "cost_usd_total": 0.02681,
+      "validation_attempts_mean": 1,
+      "retry_total": 0,
+      "judge_numeric_mean": 5,
+      "judge_action_mean": 5
+    },
+    "chat": {
+      "n": 4,
+      "route_acc": 1.0,
+      "target_recall": null,
+      "target_precision": null,
+      "type_recall": null,
+      "type_precision": null,
+      "ungrounded_rate": null,
+      "latency_s_mean": 1.6678,
+      "latency_s_incident_mean": null,
+      "cost_usd_total": 0.000143,
+      "validation_attempts_mean": null,
+      "retry_total": 0
+    }
+  },
+  "results": [
+    {
+      "id": "B01",
+      "set": "base",
+      "query": "payments-service 결제 응답이 느려지고 CPU가 치솟았어요, 원인 확인해주세요",
+      "expected_route": "incident",
+      "route": "incident",
+      "route_ok": true,
+      "investigated": [
+        "payments-service"
+      ],
+      "runbooks": [
+        "cpu-spike"
+      ],
+      "target_recall": 1.0,
+      "target_precision": 1.0,
+      "type_recall": 1.0,
+      "type_precision": 1.0,
+      "ungrounded": [],
+      "latency_s": 6.751,
+      "cost_usd": 0.003518,
+      "validation_attempts": 1,
+      "retry_count": 1,
+      "final": "1) 모니터링 결과 payments-service의 상태가 저하되었으며, CPU 사용률이 89.7%로 임계치(80%)를 초과하였습니다. 메모리 사용률은 54.4%로 확인되었습니다. 알림으로는 'CPU 91% (threshold 80%)'와 'payments-service-3 instance responding slow'가 발생하였습니다.\n\n2) Runbook에 따르면, CPU 급증의 일반적인 원인은 트래픽 급증, 무한 루프, 배치 중복 실행입니다. 현재 상황에서는 CPU 사용률이 높고 응답 속도가 느려진 것으로 보아 이러한 원인 중 하나일 가능성이 있습니다.\n\n3) 대응 절차에 따라, CPU 사용률이 90%를 넘고 지속되는 경우 오토스케일링 그룹에서 인스턴스를 추가하여 부하를 분산시키는 것이 필요합니다. 또한, 최근 배포나 트래픽 변화가 있었는지 확인하고, 반복 호출이나 배치 작업 중복 실행 같은 특정 요청 패턴이 있는지 로그를 통해 확인해야 합니다. 문제가 특정 배포 직후 시작되었다면, 해당 배포를 롤백하고 원인 분석을 진행해야 합니다. 정상화 후에는 프로파일링 결과를 바탕으로 핫스팟 코드를 식별하여 최적화 작업을 등록해야 합니다.",
+      "judge": {
+        "numeric_accuracy": 4,
+        "action_relevance": 5,
+        "reason": "답변에서 CPU 사용률과 메모리 사용률을 정확히 인용하였고, 권장 조치가 수집된 증상 및 runbook에 적합하다."
+      }
+    },
+    {
+      "id": "B02",
+      "set": "base",
+      "query": "cache-service 메모리 사용률이 계속 올라가고 있어요",
+      "expected_route": "incident",
+      "route": "incident",
+      "route_ok": true,
+      "investigated": [
+        "cache-service"
+      ],
+      "runbooks": [
+        "memory-leak"
+      ],
+      "target_recall": 1.0,
+      "target_precision": 1.0,
+      "type_recall": 1.0,
+      "type_precision": 1.0,
+      "ungrounded": [],
+      "latency_s": 5.694,
+      "cost_usd": 0.003324,
+      "validation_attempts": 1,
+      "retry_count": 0,
+      "final": "1) 현재 cache-service의 상태는 'degraded'이며, CPU 사용률은 45.3%, 메모리 사용률은 90.7%로 확인되었습니다. 알림으로는 'memory usage climbing steadily over 6h'와 'heap near limit'이 발생했습니다.\n\n2) 메모리 사용률이 90% 이상으로 OOM(Out Of Memory) 직전 상태이므로, 서비스 중단을 막기 위해 해당 프로세스를 즉시 재시작해야 합니다. 이는 임시 조치임을 기록해두어야 합니다.\n\n3) 이후, 힙 덤프 또는 프로파일링 도구를 사용하여 어떤 객체가 계속 쌓이고 있는지 확인해야 합니다. 최근 배포에서 캐시 무제한 증가, 커넥션 미반환, 이벤트 리스너 중복 등록 같은 패턴이 있었는지 점검합니다.\n\n4) 만약 원인이 된 배포가 발견되면 롤백을 수행하고, 컨테이너 메모리 상한선을 재확인하여 재발 시 더 빨리 감지될 수 있도록 조정합니다.",
+      "judge": {
+        "numeric_accuracy": 5,
+        "action_relevance": 5,
+        "reason": "답변은 수집된 사실을 정확히 반영하고 있으며, 권장 조치가 수집된 증상 및 runbook에 적합합니다."
+      }
+    },
+    {
+      "id": "B03",
+      "set": "base",
+      "query": "log-service 디스크 공간이 부족하다는 알림이 왔어요",
+      "expected_route": "incident",
+      "route": "incident",
+      "route_ok": true,
+      "investigated": [
+        "log-service"
+      ],
+      "runbooks": [
+        "disk-full"
+      ],
+      "target_recall": 1.0,
+      "target_precision": 1.0,
+      "type_recall": 1.0,
+      "type_precision": 1.0,
+      "ungrounded": [],
+      "latency_s": 4.395,
+      "cost_usd": 0.003025,
+      "validation_attempts": 1,
+      "retry_count": 0,
+      "final": "1) 모니터링 결과, log-service의 디스크 사용률이 95%로 임계 수준(90% 이상)을 초과하여 상태가 'degraded'로 나타났습니다. 이는 로그 파일 및 오래된 백업의 누적이 원인일 수 있습니다.\n\n2) 즉시 조치로, 안전하게 삭제 가능한 로그 파일, 임시 파일, 오래된 백업 등을 정리하여 디스크 여유 공간을 확보해야 합니다.\n\n3) 만약 특정 프로세스가 비정상적으로 로그를 쌓고 있다면, 로그 레벨을 낮추거나 로그 로테이션 주기를 단축하여 로그 생성량을 줄입니다. 임시 조치로도 공간 확보가 충분하지 않다면, 볼륨을 확장하거나 추가 스토리지를 연결하는 방안을 고려해야 합니다. 정상화 후에는 로그 보존 정책과 디스크 사용률 알림 임계값을 재검토하여 조기 감지가 가능하도록 조정합니다.",
+      "judge": {
+        "numeric_accuracy": 5,
+        "action_relevance": 5,
+        "reason": "답변에서 수집된 사실의 디스크 사용률(95%)을 정확히 인용하고, 권장 조치가 runbook에 명시된 절차와 일치합니다."
+      }
+    },
+    {
+      "id": "B04",
+      "set": "base",
+      "query": "gateway-service에서 payments-service로 가는 요청이 타임아웃 나고 있어요",
+      "expected_route": "incident",
+      "route": "incident",
+      "route_ok": true,
+      "investigated": [
+        "gateway-service",
+        "payments-service"
+      ],
+      "runbooks": [
+        "error-rate-spike",
+        "cpu-spike"
+      ],
+      "target_recall": 1.0,
+      "target_precision": 1.0,
+      "type_recall": 0.0,
+      "type_precision": 0.5,
+      "ungrounded": [],
+      "latency_s": 5.665,
+      "cost_usd": 0.004995,
+      "validation_attempts": 1,
+      "retry_count": 0,
+      "final": "1) 현재 gateway-service와 payments-service 모두 상태가 저하된 것으로 확인되었습니다. gateway-service는 CPU 27.7%, 메모리 43.8%를 사용 중이며, 'upstream timeout to payments-service (504)'와 'network packet loss 3%' 알림이 발생했습니다. payments-service는 CPU 92.3%, 메모리 55.7%를 사용 중이며, 'CPU 91% (threshold 80%)'와 'payments-service-3 instance responding slow' 알림이 발생했습니다.\n\n2) payments-service의 CPU 사용률이 92.3%로 임계치를 넘고 있어, CPU 급증 대응 절차에 따라 인스턴스를 오토스케일링 그룹에서 한 대 더 띄워 부하를 분산해야 합니다. 또한, 최근 배포/트래픽 변화 시점을 확인하여 특정 요청 패턴이 원인인지 로그를 점검해야 합니다.\n\n3) gateway-service의 'upstream timeout to payments-service (504)' 문제는 payments-service의 높은 CPU 사용률과 관련이 있을 수 있습니다. 따라서 payments-service의 부하 분산 후에도 문제가 지속된다면, 에러율 급증 대응 절차에 따라 에러 로그의 스택트레이스를 수집하고 공통 예외 유형을 식별해야 합니다. 필요 시, 문제 기능을 feature flag로 끄거나 해당 엔드포인트 트래픽을 차단하는 조치를 고려해야 합니다.",
+      "judge": {
+        "numeric_accuracy": 5,
+        "action_relevance": 5,
+        "reason": "답변에서 수집된 사실의 수치와 상태를 정확히 인용하였으며, 권장 조치가 수집된 증상 및 runbook에 적합하다."
+      }
+    },
+    {
+      "id": "B05",
+      "set": "base",
+      "query": "web-01 CPU 급증, auth-service 커넥션 풀도 같이 확인해줘",
+      "expected_route": "incident",
+      "route": "incident",
+      "route_ok": true,
+      "investigated": [
+        "web-01",
+        "auth-service"
+      ],
+      "runbooks": [
+        "high-latency"
+      ],
+      "target_recall": 1.0,
+      "target_precision": 1.0,
+      "type_recall": 1.0,
+      "type_precision": 1.0,
+      "ungrounded": [],
+      "latency_s": 5.977,
+      "cost_usd": 0.003655,
+      "validation_attempts": 1,
+      "retry_count": 0,
+      "final": "1) web-01의 상태는 정상이며, CPU 사용률은 34.5%로 급증하지 않았습니다. 메모리 사용률은 48.2%이며, 알림은 없습니다.\n\n2) auth-service의 상태는 저하(degraded) 상태이며, CPU 사용률은 77.4%, 메모리 사용률은 60.7%입니다. 알림은 두 건이 있으며, 'p95 latency 2.4s (threshold 1.0s)'와 'connection pool 92% used'입니다.\n\n3) auth-service의 커넥션 풀 사용률이 92%로 높으므로, runbook에 따라 커넥션 풀 크기를 늘리거나 느린 쿼리/외부 호출에 타임아웃을 설정해야 합니다. 또한, p95 지연시간이 임계치(1.0s)를 초과하므로, 캐시 계층 또는 읽기 복제본으로 트래픽을 분산하는 방안을 고려해야 합니다. 정상화 후에는 느린 쿼리 로그를 분석하여 근본 원인을 문서화하고 후속 최적화 티켓을 등록해야 합니다.",
+      "judge": {
+        "numeric_accuracy": 5,
+        "action_relevance": 5,
+        "reason": "답변에서 수치와 상태를 정확히 인용하였고, 권장 조치가 수집된 증상 및 runbook에 적합하다."
+      }
+    },
+    {
+      "id": "B06",
+      "set": "base",
+      "query": "payments-service랑 cache-service 둘 다 저하됐는데 공통 원인이 있는지 분석해줘",
+      "expected_route": "incident",
+      "route": "incident",
+      "route_ok": true,
+      "investigated": [
+        "payments-service",
+        "cache-service"
+      ],
+      "runbooks": [
+        "cpu-spike",
+        "memory-leak"
+      ],
+      "target_recall": 1.0,
+      "target_precision": 1.0,
+      "type_recall": 1.0,
+      "type_precision": 1.0,
+      "ungrounded": [],
+      "latency_s": 5.967,
+      "cost_usd": 0.004996,
+      "validation_attempts": 1,
+      "retry_count": 0,
+      "final": "1) payments-service의 상태 저하는 CPU 사용률 급증과 관련이 있습니다. 현재 CPU 사용률은 95.8%로, 임계치인 80%를 초과하고 있습니다. 이는 트래픽 급증, 무한 루프, 배치 중복 실행 등이 원인일 수 있습니다. 메모리 사용률은 57.4%로 상대적으로 안정적입니다.\n\n2) cache-service의 상태 저하는 메모리 사용률 증가와 관련이 있습니다. 현재 메모리 사용률은 88.8%로, 메모리 사용량이 시간에 따라 꾸준히 증가하고 있습니다. 이는 메모리 누수 가능성을 시사하며, 캐시 무제한 증가, 커넥션 미반환, 이벤트 리스너 중복 등록 등이 원인일 수 있습니다. CPU 사용률은 41.7%로 상대적으로 낮습니다.\n\n3) 두 서비스의 저하 원인은 각각 CPU 급증과 메모리 누수로, 공통 원인은 발견되지 않았습니다. payments-service는 CPU 부하 분산을 위해 오토스케일링을 고려하고, cache-service는 메모리 사용 패턴을 분석하여 메모리 누수 원인을 파악해야 합니다.",
+      "judge": {
+        "numeric_accuracy": 5,
+        "action_relevance": 5,
+        "reason": "답변은 수집된 사실을 정확히 반영하고 있으며, 권장 조치도 적절하게 제시되었습니다."
+      }
+    },
+    {
+      "id": "B07",
+      "set": "base",
+      "query": "로그인 응답이 느려요, 원인 확인해주세요",
+      "expected_route": "incident",
+      "route": "incident",
+      "route_ok": true,
+      "investigated": [
+        "auth-service"
+      ],
+      "runbooks": [
+        "high-latency"
+      ],
+      "target_recall": 1.0,
+      "target_precision": 1.0,
+      "type_recall": 1.0,
+      "type_precision": 1.0,
+      "ungrounded": [],
+      "latency_s": 4.819,
+      "cost_usd": 0.003359,
+      "validation_attempts": 1,
+      "retry_count": 0,
+      "final": "1) 모니터링 결과 auth-service의 상태가 'degraded'로 확인되었으며, CPU 사용률은 80.2%, 메모리 사용률은 62.1%로 나타났습니다. 또한, p95 지연시간이 2.4초로 임계치인 1.0초를 초과하였고, 커넥션 풀 사용률이 92%로 확인되었습니다.\n\n2) Runbook에 따라, 커넥션 풀 사용률이 90%를 초과하였으므로 풀 크기를 늘리거나 느린 쿼리 및 외부 호출에 타임아웃을 설정하는 조치가 필요합니다.\n\n3) 5분 내에 p95 지연시간이 임계치 아래로 내려오지 않을 경우, 캐시 계층 또는 읽기 복제본으로 트래픽을 분산하여 문제를 해결해야 합니다. 이후, 정상화가 이루어지면 느린 쿼리 로그를 분석하여 근본 원인을 문서화하고 후속 최적화 티켓을 등록해야 합니다.",
+      "judge": {
+        "numeric_accuracy": 5,
+        "action_relevance": 5,
+        "reason": "답변은 수집된 사실을 정확히 반영하고 있으며, 권장 조치도 Runbook에 명시된 증상과 절차에 적합합니다."
+      }
+    },
+    {
+      "id": "B08",
+      "set": "base",
+      "query": "billing-service 응답이 느려요",
+      "expected_route": "incident",
+      "route": "incident",
+      "route_ok": true,
+      "investigated": [
+        "billing-service"
+      ],
+      "runbooks": [],
+      "target_recall": 1.0,
+      "target_precision": 1.0,
+      "type_recall": null,
+      "type_precision": null,
+      "ungrounded": [],
+      "latency_s": 4.553,
+      "cost_usd": 0.001382,
+      "validation_attempts": 1,
+      "retry_count": 0,
+      "final": "1) 모니터링 시스템에서 'billing-service'가 인식되지 않아 상태가 'unknown'으로 표시되고 있습니다.  \n2) 현재 'billing-service'의 CPU 및 메모리 사용률은 각각 0.0%로 나타나고 있습니다.  \n3) 모니터링 시스템에서 \"System 'billing-service' not found in monitoring\"이라는 알림이 1건 발생했습니다.  \n\n조치가 필요합니다. 모니터링 시스템 설정을 확인하고 'billing-service'가 올바르게 등록되어 있는지 점검해야 합니다.",
+      "judge": {
+        "numeric_accuracy": 5,
+        "action_relevance": 5,
+        "reason": "답변은 수집된 사실을 정확히 반영하고 있으며, 권장 조치도 적절합니다."
+      }
+    },
+    {
+      "id": "N01",
+      "set": "natural",
+      "query": "결제가 자꾸 실패하고 너무 느려요",
+      "expected_route": "incident",
+      "route": "incident",
+      "route_ok": true,
+      "investigated": [
+        "payments-service"
+      ],
+      "runbooks": [
+        "cpu-spike"
+      ],
+      "target_recall": 1.0,
+      "target_precision": 1.0,
+      "type_recall": 1.0,
+      "type_precision": 1.0,
+      "ungrounded": [],
+      "latency_s": 5.057,
+      "cost_usd": 0.003328,
+      "validation_attempts": 1,
+      "retry_count": 0,
+      "final": "1) 모니터링 결과, payments-service의 상태가 저하되었으며 CPU 사용률이 92.1%로 임계치(80%)를 초과하였습니다. 메모리 사용률은 55.6%입니다. 알림으로는 'CPU 91% (threshold 80%)'와 'payments-service-3 instance responding slow'가 발생하였습니다.\n\n2) 문제의 원인은 CPU 사용률 급증으로 인한 처리 속도 저하로 보입니다. 이는 트래픽 급증, 무한 루프, 배치 중복 실행 등이 원인일 수 있습니다. 최근 로그를 확인하여 반복 호출이나 배치 작업 중복 실행 같은 특정 요청 패턴이 있는지 조사해야 합니다.\n\n3) CPU 사용률이 90%를 넘고 지속되고 있으므로, 오토스케일링 그룹에서 인스턴스를 한 대 더 추가하여 부하를 분산시키는 조치를 취해야 합니다. 또한, 급증이 특정 배포 직후 시작되었다면 직전 배포를 롤백하고 원인 분석을 별도로 진행해야 합니다. 정상화 후에는 프로파일링 결과를 바탕으로 핫스팟 코드를 식별하여 최적화 작업을 등록해야 합니다.",
+      "judge": {
+        "numeric_accuracy": 5,
+        "action_relevance": 5,
+        "reason": "답변은 수집된 사실을 정확히 반영하고 있으며, 권장 조치가 수집된 증상 및 runbook에 적합하다."
+      }
+    },
+    {
+      "id": "N02",
+      "set": "natural",
+      "query": "캐시 서버 메모리가 계속 차오르고 있어요",
+      "expected_route": "incident",
+      "route": "incident",
+      "route_ok": true,
+      "investigated": [
+        "cache-service"
+      ],
+      "runbooks": [
+        "memory-leak"
+      ],
+      "target_recall": 1.0,
+      "target_precision": 1.0,
+      "type_recall": 1.0,
+      "type_precision": 1.0,
+      "ungrounded": [],
+      "latency_s": 5.117,
+      "cost_usd": 0.003319,
+      "validation_attempts": 1,
+      "retry_count": 0,
+      "final": "1) 현재 캐시 서버의 메모리 사용률이 88.4%로 높으며, 메모리 사용량이 6시간 동안 꾸준히 증가하고 있다는 알림이 2건 발생했습니다. 이는 메모리 누수로 인한 문제일 가능성이 높습니다.\n\n2) 메모리 사용률이 90%에 근접할 경우, 서비스 중단을 방지하기 위해 해당 프로세스를 즉시 재시작해야 합니다. 이는 임시 조치임을 기록해두어야 합니다.\n\n3) 메모리 누수의 원인을 파악하기 위해 힙 덤프 또는 프로파일링 도구를 사용하여 어떤 객체가 계속 쌓이고 있는지 확인해야 합니다. 최근 배포에서 캐시 무제한 증가, 커넥션 미반환, 이벤트 리스너 중복 등록과 같은 패턴이 있었는지 점검합니다.\n\n4) 문제가 된 배포가 확인되면 롤백을 수행하고, 컨테이너 메모리 상한선을 재확인하여 재발 시 더 빨리 감지될 수 있도록 조정합니다.",
+      "judge": {
+        "numeric_accuracy": 5,
+        "action_relevance": 5,
+        "reason": "답변은 수집된 사실의 메모리 사용률과 경고를 정확히 반영하고 있으며, 권장 조치가 수집된 증상 및 runbook에 적합하다."
+      }
+    },
+    {
+      "id": "N03",
+      "set": "natural",
+      "query": "API 게이트웨이에서 504가 계속 떠요",
+      "expected_route": "incident",
+      "route": "incident",
+      "route_ok": true,
+      "investigated": [
+        "gateway-service"
+      ],
+      "runbooks": [
+        "error-rate-spike"
+      ],
+      "target_recall": 1.0,
+      "target_precision": 1.0,
+      "type_recall": 0.0,
+      "type_precision": 0.0,
+      "ungrounded": [],
+      "latency_s": 4.62,
+      "cost_usd": 0.003219,
+      "validation_attempts": 1,
+      "retry_count": 0,
+      "final": "1) 현재 API 게이트웨이에서 발생하는 504 오류는 'upstream timeout to payments-service (504)'와 'network packet loss 3%'로 인해 발생하고 있습니다. gateway-service의 상태는 'degraded'로 확인되었으며, CPU 사용률은 35.1%, 메모리 사용률은 47.5%입니다.\n\n2) 에러율 급증 대응 절차에 따라, 먼저 get_monitoring_status를 사용하여 에러율 상승 시작 시점과 최근 배포 이력을 대조해야 합니다. 만약 에러가 배포 직후 시작되었다면, 해당 버전을 직전 버전으로 롤백하여 에러율이 감소하는지 확인해야 합니다.\n\n3) 롤백이 불가능한 경우, 문제 기능을 feature flag로 비활성화하거나 해당 엔드포인트의 트래픽을 차단해야 합니다. 이후 에러 로그의 스택트레이스를 수집하여 공통 예외 유형을 식별하고, 정상화 후에는 배포 파이프라인에 카나리 배포 또는 에러율 기반 자동 롤백 조건을 추가하는 것이 필요합니다.",
+      "judge": {
+        "numeric_accuracy": 5,
+        "action_relevance": 5,
+        "reason": "답변은 수집된 사실의 수치를 정확히 인용하였고, 권장 조치는 수집된 증상 및 runbook에 적합하다."
+      }
+    },
+    {
+      "id": "N04",
+      "set": "natural",
+      "query": "로그 저장 서버 용량이 꽉 찼대요",
+      "expected_route": "incident",
+      "route": "incident",
+      "route_ok": true,
+      "investigated": [
+        "log-service"
+      ],
+      "runbooks": [
+        "disk-full"
+      ],
+      "target_recall": 1.0,
+      "target_precision": 1.0,
+      "type_recall": 1.0,
+      "type_precision": 1.0,
+      "ungrounded": [],
+      "latency_s": 4.408,
+      "cost_usd": 0.002959,
+      "validation_attempts": 1,
+      "retry_count": 0,
+      "final": "1) 모니터링 결과 log-service의 디스크 사용률이 95%로 임계 수준을 초과하여 상태가 저하되었습니다. CPU 사용률은 25.0%, 메모리 사용률은 37.5%로 확인되었습니다.\n\n2) 디스크 용량 부족 문제를 해결하기 위해 다음 조치를 수행합니다:\n   - 로그 파일, 임시 파일, 오래된 백업을 정리하여 즉시 여유 공간을 확보합니다.\n   - 특정 프로세스가 비정상적으로 로그를 쌓고 있는 경우, 로그 레벨을 낮추거나 로테이션 주기를 단축합니다.\n   - 임시 조치로도 부족할 경우, 볼륨을 확장하거나 추가 스토리지를 연결합니다.\n\n3) 문제 해결 후, 로그 보존 정책과 디스크 사용률 알림 임계값을 재검토하여 조기에 감지될 수 있도록 조정합니다.",
+      "judge": {
+        "numeric_accuracy": 5,
+        "action_relevance": 5,
+        "reason": "답변은 수집된 사실을 정확히 반영하고 있으며, 권장 조치도 수집된 증상 및 runbook에 적합하다."
+      }
+    },
+    {
+      "id": "E01",
+      "set": "extended",
+      "query": "order-service 배포하고 나서 에러가 엄청 나요",
+      "expected_route": "incident",
+      "route": "incident",
+      "route_ok": true,
+      "investigated": [
+        "order-service"
+      ],
+      "runbooks": [
+        "error-rate-spike"
+      ],
+      "target_recall": 1.0,
+      "target_precision": 1.0,
+      "type_recall": 1.0,
+      "type_precision": 1.0,
+      "ungrounded": [],
+      "latency_s": 4.734,
+      "cost_usd": 0.003315,
+      "validation_attempts": 1,
+      "retry_count": 0,
+      "final": "1) 모니터링 결과, order-service의 상태가 'degraded'로 확인되었으며, CPU 사용률은 52.3%, 메모리 사용률은 58.6%로 나타났습니다. 알림으로는 'HTTP 5xx error rate 12% (threshold 1%)'와 'error spike began right after deploy v2.3.1'이 수신되었습니다.\n\n2) 에러율 급증 대응 절차에 따라, 에러율 상승이 배포 직후 시작된 것으로 확인되었으므로, 현재 배포된 v2.3.1 버전을 직전 버전으로 즉시 롤백하여 에러율이 감소하는지 확인해야 합니다.\n\n3) 만약 롤백이 불가능한 경우, 문제 기능을 feature flag로 비활성화하거나 해당 엔드포인트의 트래픽을 차단하는 조치를 취해야 합니다. 이후 에러 로그의 스택트레이스를 수집하여 공통 예외 유형을 식별하고, 정상화 후에는 배포 파이프라인에 카나리 배포 또는 에러율 기반 자동 롤백 조건을 추가해야 합니다.",
+      "judge": {
+        "numeric_accuracy": 5,
+        "action_relevance": 5,
+        "reason": "답변은 수집된 사실을 정확히 반영하고 있으며, 권장 조치도 적절하게 제시되었습니다."
+      }
+    },
+    {
+      "id": "E02",
+      "set": "extended",
+      "query": "search-service 검색이 자꾸 죽어요",
+      "expected_route": "incident",
+      "route": "incident",
+      "route_ok": true,
+      "investigated": [
+        "search-service"
+      ],
+      "runbooks": [
+        "memory-leak"
+      ],
+      "target_recall": 1.0,
+      "target_precision": 1.0,
+      "type_recall": 1.0,
+      "type_precision": 1.0,
+      "ungrounded": [],
+      "latency_s": 5.545,
+      "cost_usd": 0.003908,
+      "validation_attempts": 1,
+      "retry_count": 0,
+      "final": "1) 현재 search-service의 상태는 'degraded'이며, CPU 사용률은 71.2%, 메모리 사용률은 96.6%로 확인되었습니다. 알림으로는 'GC pause 1.8s, old gen 94% retained'와 'worker-2 OOM killed (exit 137)'가 발생했습니다.\n\n2) 문제의 원인은 메모리 누수(memory-leak)로 추정됩니다. 메모리 사용량이 시간이 지남에 따라 증가하여 힙 메모리가 한계에 도달하고, GC 지연이 길어지거나 메모리 부족으로 프로세스가 강제 종료되는 증상이 나타났습니다.\n\n3) 대응 절차로는 다음을 권장합니다:\n   - 메모리 사용률 추세를 확인하여 메모리 사용량이 꾸준히 증가하는지 모니터링합니다.\n   - 메모리 사용률이 90% 이상일 경우, 해당 프로세스를 즉시 재시작하여 서비스 중단을 방지합니다. 이 조치는 임시 조치임을 기록합니다.\n   - 힙 덤프 또는 프로파일링 도구를 사용하여 어떤 객체가 계속 쌓이는지 분석합니다.\n   - 최근 배포에서 캐시 무제한 증가, 커넥션 미반환, 이벤트 리스너 중복 등록 같은 패턴이 있었는지 점검합니다.\n   - 원인이 된 배포가 확인되면 롤백을 수행하고, 컨테이너 메모리 상한선을 재확인하여 재발 시 더 빨리 감지되도록 조정합니다.",
+      "judge": {
+        "numeric_accuracy": 5,
+        "action_relevance": 5,
+        "reason": "답변에서 수집된 사실의 수치와 상태를 정확히 인용하였고, 권장 조치가 수집된 증상 및 runbook에 적합하다."
+      }
+    },
+    {
+      "id": "E03",
+      "set": "extended",
+      "query": "notification-service 푸시 발송이 안 돼요",
+      "expected_route": "incident",
+      "route": "incident",
+      "route_ok": true,
+      "investigated": [
+        "notification-service"
+      ],
+      "runbooks": [
+        "cert-expiry"
+      ],
+      "target_recall": 1.0,
+      "target_precision": 1.0,
+      "type_recall": 1.0,
+      "type_precision": 1.0,
+      "ungrounded": [],
+      "latency_s": 4.837,
+      "cost_usd": 0.003114,
+      "validation_attempts": 1,
+      "retry_count": 0,
+      "final": "1) 모니터링 결과, notification-service의 상태가 'degraded'로 확인되었으며, TLS 핸드셰이크 실패가 분당 340건 발생하고 있습니다. 또한, push.example.com의 인증서가 2일 후 만료될 예정입니다.\n\n2) 문제의 원인은 인증서 만료로 인한 TLS/SSL 핸드셰이크 실패로 보입니다. 인증서 관리 도구를 통해 해당 도메인의 인증서 만료 일시와 자동 갱신 상태를 점검해야 합니다.\n\n3) 자동 갱신이 실패한 경우, 인증서를 수동으로 재발급하여 로드밸런서 또는 인그레스에 교체 적용해야 합니다. 이후, 외부에서 openssl s_client를 사용하여 중간 인증서 체인이 누락되지 않았는지 검증하고, 정상화 후에는 인증서 만료 30일 및 7일 전에 알림을 추가하고 자동 갱신 실패 시 경보가 오도록 조정해야 합니다.",
+      "judge": {
+        "numeric_accuracy": 5,
+        "action_relevance": 5,
+        "reason": "답변은 수집된 사실을 정확히 반영하고 있으며, 권장 조치가 수집된 증상 및 runbook에 적합합니다."
+      }
+    },
+    {
+      "id": "E04",
+      "set": "extended",
+      "query": "주문하기 버튼 누르면 500 에러가 떠요",
+      "expected_route": "incident",
+      "route": "incident",
+      "route_ok": true,
+      "investigated": [
+        "order-service"
+      ],
+      "runbooks": [
+        "error-rate-spike"
+      ],
+      "target_recall": 1.0,
+      "target_precision": 1.0,
+      "type_recall": 1.0,
+      "type_precision": 1.0,
+      "ungrounded": [],
+      "latency_s": 4.63,
+      "cost_usd": 0.00325,
+      "validation_attempts": 1,
+      "retry_count": 0,
+      "final": "1) 모니터링 결과, order-service의 상태가 저하되었으며 CPU 사용률은 57.7%, 메모리 사용률은 61.3%로 확인되었습니다. 또한, 'HTTP 5xx error rate 12% (threshold 1%)'와 'error spike began right after deploy v2.3.1'이라는 두 가지 알림이 발생했습니다.\n\n2) 에러율 급증 대응 절차에 따라, 에러율 상승이 v2.3.1 배포 직후 시작된 것으로 확인되었습니다. 따라서, 해당 버전을 직전 버전으로 롤백하여 에러율이 감소하는지 확인해야 합니다.\n\n3) 롤백이 불가능한 경우, 문제 기능을 feature flag로 비활성화하거나 해당 엔드포인트의 트래픽을 차단하는 조치를 취해야 합니다. 이후, 에러 로그의 스택트레이스를 분석하여 공통 예외 유형을 식별하고, 정상화 후에는 배포 파이프라인에 카나리 배포 또는 에러율 기반 자동 롤백 조건을 추가해야 합니다.",
+      "judge": {
+        "numeric_accuracy": 5,
+        "action_relevance": 5,
+        "reason": "답변은 수집된 사실을 정확히 반영하고 있으며, 권장 조치도 적절하게 제시되었습니다."
+      }
+    },
+    {
+      "id": "E05",
+      "set": "extended",
+      "query": "상품 검색이 멈췄어요, 확인 부탁해요",
+      "expected_route": "incident",
+      "route": "incident",
+      "route_ok": true,
+      "investigated": [
+        "search-service"
+      ],
+      "runbooks": [
+        "memory-leak"
+      ],
+      "target_recall": 1.0,
+      "target_precision": 1.0,
+      "type_recall": 1.0,
+      "type_precision": 1.0,
+      "ungrounded": [],
+      "latency_s": 6.08,
+      "cost_usd": 0.003935,
+      "validation_attempts": 1,
+      "retry_count": 0,
+      "final": "1) 현재 search-service의 상태가 저하(degraded)되었으며, CPU 사용률은 67.7%, 메모리 사용률은 94.9%로 확인되었습니다. 알림으로는 'GC pause 1.8s, old gen 94% retained'와 'worker-2 OOM killed (exit 137)'가 발생했습니다.\n\n2) 메모리 누수(memory leak)로 인한 문제로 판단되며, 메모리 사용량이 지속적으로 증가하여 힙 메모리가 한계에 도달하고 GC 지연이 발생하거나 메모리 부족으로 프로세스가 강제 종료되는 증상이 나타났습니다.\n\n3) 대응 절차로는 다음을 수행해야 합니다:\n   - 메모리 사용률 추세를 확인하여 메모리 사용량이 시간에 따라 꾸준히 증가하는지 모니터링합니다.\n   - 메모리 사용률이 90% 이상일 경우, 해당 프로세스를 즉시 재시작하여 서비스 중단을 방지합니다. 이 조치는 임시 조치임을 기록합니다.\n   - 힙 덤프 또는 프로파일링 도구를 사용하여 어떤 객체가 계속 쌓이는지 확인합니다.\n   - 캐시 무제한 증가, 커넥션 미반환, 이벤트 리스너 중복 등록 같은 패턴이 최근 배포에 있었는지 점검합니다.\n   - 원인이 된 배포가 확인되면 롤백을 수행하고, 컨테이너 메모리 상한선을 재확인하여 재발 시 더 빨리 감지되도록 조정합니다.",
+      "judge": {
+        "numeric_accuracy": 5,
+        "action_relevance": 5,
+        "reason": "답변에서 수집된 사실의 수치와 상태를 정확히 인용하였고, 권장 조치가 수집된 증상 및 runbook에 적절히 맞춰져 있다."
+      }
+    },
+    {
+      "id": "E06",
+      "set": "extended",
+      "query": "푸시 알림이 하나도 안 와요",
+      "expected_route": "incident",
+      "route": "chat",
+      "route_ok": false,
+      "investigated": [],
+      "runbooks": [],
+      "target_recall": 0.0,
+      "target_precision": null,
+      "type_recall": 0.0,
+      "type_precision": null,
+      "ungrounded": [],
+      "latency_s": 1.83,
+      "cost_usd": 3.8e-05,
+      "validation_attempts": 0,
+      "retry_count": 0,
+      "final": "푸시 알림 설정을 확인해 보세요. 앱의 알림 권한이 활성화되어 있는지 확인하는 것도 좋습니다."
+    },
+    {
+      "id": "E07",
+      "set": "extended",
+      "query": "order-service랑 notification-service 같이 이상해요, 확인해주세요",
+      "expected_route": "incident",
+      "route": "incident",
+      "route_ok": true,
+      "investigated": [
+        "order-service",
+        "notification-service"
+      ],
+      "runbooks": [
+        "error-rate-spike",
+        "cert-expiry"
+      ],
+      "target_recall": 1.0,
+      "target_precision": 1.0,
+      "type_recall": 1.0,
+      "type_precision": 1.0,
+      "ungrounded": [],
+      "latency_s": 5.192,
+      "cost_usd": 0.005303,
+      "validation_attempts": 1,
+      "retry_count": 0,
+      "final": "1) order-service의 상태가 'degraded'로 확인되었으며, CPU 사용률은 61.9%, 메모리 사용률은 63.5%입니다. 알림으로는 'HTTP 5xx error rate 12% (threshold 1%)'와 'error spike began right after deploy v2.3.1'이 있습니다. 이는 최근 배포된 v2.3.1 버전 이후 에러율이 급증했음을 나타냅니다. 따라서, runbook에 따라 해당 버전을 직전 버전으로 롤백하여 에러율이 감소하는지 확인해야 합니다.\n\n2) notification-service의 상태도 'degraded'로 확인되었으며, CPU 사용률은 23.7%, 메모리 사용률은 39.3%입니다. 알림으로는 'TLS handshake failures 340/min'과 'certificate for push.example.com expires in 2 days'가 있습니다. 이는 인증서 만료가 임박하여 TLS 핸드셰이크 실패가 발생하고 있음을 나타냅니다. 따라서, 인증서 관리 도구를 통해 해당 도메인의 인증서 만료 일시와 자동 갱신 상태를 점검하고, 필요 시 수동으로 인증서를 재발급하여 적용해야 합니다.\n\n3) 두 서비스 모두 정상화 후에는 각각의 문제에 대한 예방 조치를 추가해야 합니다. order-service의 경우, 배포 파이프라인에 카나리 배포 또는 에러율 기반 자동 롤백 조건을 추가하고, notification-service의 경우, 인증서 만료 30일·7일 전 알림을 추가하고 자동 갱신 실패 시 경보가 오도록 조정해야 합니다.",
+      "judge": {
+        "numeric_accuracy": 5,
+        "action_relevance": 5,
+        "reason": "답변은 수집된 사실을 정확히 반영하고 있으며, 권장 조치도 각 서비스의 증상에 적합하다."
+      }
+    },
+    {
+      "id": "E08",
+      "set": "extended",
+      "query": "cache-service랑 search-service 둘 다 메모리 문제 같은데 확인해줘",
+      "expected_route": "incident",
+      "route": "incident",
+      "route_ok": true,
+      "investigated": [
+        "cache-service",
+        "search-service"
+      ],
+      "runbooks": [
+        "memory-leak"
+      ],
+      "target_recall": 1.0,
+      "target_precision": 1.0,
+      "type_recall": 1.0,
+      "type_precision": 1.0,
+      "ungrounded": [],
+      "latency_s": 5.916,
+      "cost_usd": 0.003947,
+      "validation_attempts": 1,
+      "retry_count": 0,
+      "final": "1) 현재 cache-service와 search-service 모두 메모리 사용량이 높아져 성능 저하 상태입니다. cache-service는 메모리 사용률이 91.2%로, search-service는 96.7%로 보고되었습니다.\n\n2) 두 서비스 모두 메모리 사용량이 시간이 지남에 따라 꾸준히 증가하고 있으며, search-service의 경우 GC 지연 및 OOM(Out Of Memory) 문제가 발생했습니다. 이는 메모리 누수의 전형적인 증상입니다.\n\n3) 대응 절차에 따라, 두 서비스의 메모리 사용률이 90% 이상이므로 즉시 프로세스를 재시작하여 서비스 중단을 방지해야 합니다. 이는 임시 조치임을 기록하고, 이후 힙 덤프나 프로파일링 도구를 사용하여 메모리 누수의 원인을 분석해야 합니다. 최근 배포된 코드에서 메모리 누수의 원인이 될 수 있는 패턴이 있는지 점검하고, 필요시 롤백을 고려해야 합니다. 또한, 컨테이너 메모리 상한선을 재확인하여 향후 문제를 조기에 감지할 수 있도록 조정해야 합니다.",
+      "judge": {
+        "numeric_accuracy": 5,
+        "action_relevance": 5,
+        "reason": "답변에서 수집된 사실의 수치와 상태를 정확히 인용하였고, 권장 조치가 수집된 증상 및 runbook에 적합하다."
+      }
+    },
+    {
+      "id": "C01",
+      "set": "chat",
+      "query": "안녕, 너는 누구야?",
+      "expected_route": "chat",
+      "route": "chat",
+      "route_ok": true,
+      "investigated": [],
+      "runbooks": [],
+      "target_recall": null,
+      "target_precision": null,
+      "type_recall": null,
+      "type_precision": null,
+      "ungrounded": [],
+      "latency_s": 1.541,
+      "cost_usd": 3.6e-05,
+      "validation_attempts": 0,
+      "retry_count": 0,
+      "final": "안녕하세요! 저는 당신의 비서입니다. 도움이 필요하시면 말씀해 주세요."
+    },
+    {
+      "id": "C02",
+      "set": "chat",
+      "query": "오늘 점심 뭐 먹을까?",
+      "expected_route": "chat",
+      "route": "chat",
+      "route_ok": true,
+      "investigated": [],
+      "runbooks": [],
+      "target_recall": null,
+      "target_precision": null,
+      "type_recall": null,
+      "type_precision": null,
+      "ungrounded": [],
+      "latency_s": 1.719,
+      "cost_usd": 3.5e-05,
+      "validation_attempts": 0,
+      "retry_count": 0,
+      "final": "점심으로 김밥이나 비빔밥은 어때요?"
+    },
+    {
+      "id": "C03",
+      "set": "chat",
+      "query": "제 이름은 민수입니다",
+      "expected_route": "chat",
+      "route": "chat",
+      "route_ok": true,
+      "investigated": [],
+      "runbooks": [],
+      "target_recall": null,
+      "target_precision": null,
+      "type_recall": null,
+      "type_precision": null,
+      "ungrounded": [],
+      "latency_s": 1.58,
+      "cost_usd": 3.5e-05,
+      "validation_attempts": 0,
+      "retry_count": 0,
+      "final": "안녕하세요, 민수님! 어떻게 도와드릴까요?"
+    },
+    {
+      "id": "C04",
+      "set": "chat",
+      "query": "고마워요, 덕분에 잘 해결됐어요",
+      "expected_route": "chat",
+      "route": "chat",
+      "route_ok": true,
+      "investigated": [],
+      "runbooks": [],
+      "target_recall": null,
+      "target_precision": null,
+      "type_recall": null,
+      "type_precision": null,
+      "ungrounded": [],
+      "latency_s": 1.831,
+      "cost_usd": 3.7e-05,
+      "validation_attempts": 0,
+      "retry_count": 0,
+      "final": "잘 해결되었다니 기쁩니다! 도움이 필요하면 언제든지 말씀해 주세요."
+    }
+  ]
+}

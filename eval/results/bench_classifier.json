@@ -1,0 +1,20 @@
+{
+  "index_cold_build": {
+    "ms": 820,
+    "docs": 55,
+    "cache_hit": false,
+    "usd": 7.186e-05,
+    "tokens": 3593
+  },
+  "index_warm_build": {
+    "ms": 15,
+    "docs": 55,
+    "cache_hit": true,
+    "usd": 0.0
+  },
+  "keyword_classify_ms_median": 0.34,
+  "rag_classify_ms_median": 233.3,
+  "rag_classify_ms_p90": 272.8,
+  "rag_classify_usd_mean": 5.1e-07,
+  "resolver_ms_median": 219.0
+}
