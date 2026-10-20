@@ -9,6 +9,7 @@ import re
 from langsmith import traceable
 
 from .keywords import looks_like_incident
+from .systems import describe_metrics
 
 
 class FakeLLM:
@@ -110,7 +111,7 @@ class QualityLLM(FakeLLM):
         run = [c for c in collected if c["source"] == "runbook"]
         summary = " · ".join(
             f"{c['data']['system_name']} 상태={c['data']['status']}, "
-            f"CPU {c['data']['cpu_percent']}% (알림 {len(c['data']['alerts'])}건)"
+            f"{describe_metrics(c['data'])} (알림 {len(c['data']['alerts'])}건)"
             for c in mon)
         lines = [f"'{query}' 진단 결과:", f"1) 모니터링: {summary}"]
         if run:

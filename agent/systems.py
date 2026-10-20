@@ -46,3 +46,11 @@ def guess_target(query: str) -> str:
 def guess_targets(query: str) -> list[str]:
     """쿼리에 등장하는 시스템 전부(계획 붕괴 시 복구용). 하나도 없으면 [DEFAULT_SYSTEM]."""
     return sorted(find_mentioned_systems(query)) or [DEFAULT_SYSTEM]
+
+
+def describe_metrics(status: dict) -> str:
+    """모니터링 결과를 프롬프트용 수치 문구로. 모니터링 대상이 아닌 시스템(status=unknown)의
+    0.0 자리표시 값은 빼야 작성 모델이 'CPU 0.0%'를 실측값처럼 인용하지 않는다."""
+    if status.get("status") == "unknown":
+        return "모니터링 대상 아님(수치 없음)"
+    return f"CPU {status['cpu_percent']}%, 메모리 {status['memory_percent']}%"

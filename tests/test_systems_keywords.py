@@ -26,3 +26,10 @@ def test_routing_keywords_catch_common_symptoms():
 def test_routing_keywords_leave_small_talk():
     for q in ["안녕, 너는 누구야?", "오늘 점심 뭐 먹을까?", "제 이름은 민수입니다"]:
         assert not looks_like_incident(q), q
+
+
+def test_describe_metrics_hides_placeholder_for_unknown_system():
+    from agent.systems import describe_metrics
+    assert describe_metrics({"status": "degraded", "cpu_percent": 91.3, "memory_percent": 40.0}) \
+        == "CPU 91.3%, 메모리 40.0%"
+    assert "0.0" not in describe_metrics({"status": "unknown", "cpu_percent": 0.0, "memory_percent": 0.0})

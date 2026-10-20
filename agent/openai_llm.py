@@ -26,7 +26,7 @@ import httpx
 from langsmith import traceable
 
 from .keywords import looks_like_incident
-from .systems import KNOWN_SYSTEMS
+from .systems import KNOWN_SYSTEMS, describe_metrics
 from .systems import guess_target as _guess_target
 from .systems import guess_targets as _guess_targets
 
@@ -155,7 +155,7 @@ class OpenAIFastLLM(OpenAILLM):
                   "패턴이 없으면 '특이 패턴 없음'이라고만 답하라.")
         mon = [c["data"] for c in collected if c["source"] == "monitoring"]
         facts = "\n".join(
-            f"- {d['system_name']}: 상태={d['status']}, CPU {d['cpu_percent']}%, "
+            f"- {d['system_name']}: 상태={d['status']}, {describe_metrics(d)}, "
             f"알림 {d['alerts']}" for d in mon) or "(모니터링 데이터 없음)"
         return self._chat(system, facts)
 
@@ -193,7 +193,7 @@ class OpenAIQualityLLM(OpenAILLM):
             if c["source"] == "monitoring":
                 d = c["data"]
                 facts.append(f"- 모니터링 {d['system_name']}: 상태={d['status']}, "
-                             f"CPU {d['cpu_percent']}%, 메모리 {d['memory_percent']}%, "
+                             f"{describe_metrics(d)}, "
                              f"알림 {len(d['alerts'])}건 {d['alerts']}")
             elif c["source"] == "runbook":
                 facts.append(f"- runbook 발췌:\n{c['data'].strip()}")
