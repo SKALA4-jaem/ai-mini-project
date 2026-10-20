@@ -1,0 +1,174 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>AI Mini-Project 발표</title>
+<style>@page { size: 1280px 720px; margin: 0; }
+:root {
+  --ink: #16202e; --muted: #5b6878; --line: #dfe4ea; --bg: #ffffff;
+  --navy: #0f2340; --accent: #0e8f86; --accent-soft: #e3f4f2; --warn: #c2410c; --gray: #b8c0ca;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--bg); }
+body { font-family: "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", sans-serif; color: var(--ink);
+  -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.slide { width: 1280px; height: 720px; padding: 56px 72px 60px; position: relative; overflow: hidden;
+  page-break-after: always; break-after: page; background: var(--bg); }
+.slide:last-child { page-break-after: auto; break-after: auto; }
+.foot { position: absolute; left: 72px; right: 72px; bottom: 22px; font-size: 13px; color: var(--muted);
+  border-top: 1px solid var(--line); padding-top: 8px; }
+.kicker { font-size: 15px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h2 { font-size: 36px; font-weight: 800; margin: 6px 0 26px; letter-spacing: -.01em; }
+h3 { font-size: 19px; font-weight: 800; margin: 4px 0 10px; color: var(--navy); }
+ul, ol { padding-left: 22px; }
+li { font-size: 18px; line-height: 1.5; margin-bottom: 7px; }
+code { font-family: "SF Mono", Menlo, monospace; font-size: .88em; background: #eef1f4; padding: 1px 5px; border-radius: 4px; }
+pre { font-family: "SF Mono", Menlo, monospace; font-size: 14.5px; line-height: 1.5; background: #0f1b2d; color: #dbe7f3;
+  padding: 14px 18px; border-radius: 8px; margin-bottom: 16px; white-space: pre; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-bottom: 30px; }
+.card { background: var(--accent-soft); border-radius: 12px; padding: 22px 24px; }
+.card .big { font-size: 38px; font-weight: 800; color: var(--accent); letter-spacing: -.02em; }
+.card .cap { font-size: 16px; color: var(--muted); margin-top: 8px; line-height: 1.45; }
+.flow { list-style: none; padding: 0; }
+.flow li { font-size: 19px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.flow b { display: inline-block; width: 64px; color: var(--accent); }
+.t { width: 100%; border-collapse: collapse; font-size: 16px; }
+.t th { text-align: left; background: var(--navy); color: #fff; padding: 9px 12px; font-weight: 700; }
+.t td { padding: 8px 12px; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.4; }
+.t.small { font-size: 15px; margin-bottom: 12px; }
+.t.res td:nth-child(n+2), .t.res th:nth-child(n+2) { text-align: center; }
+.t.res td { font-size: 17px; padding: 7px 12px; }
+.t tr.hl td { background: var(--accent-soft); font-weight: 700; }
+.d { font-weight: 800; font-size: 15px; }
+.d.up { color: var(--accent); } .d.down { color: var(--warn); } .d.flat { color: var(--muted); }
+.note { font-size: 14px; color: var(--muted); margin-top: 14px; }
+.pipe { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 34px; }
+.pipe span { background: #eef1f4; border-radius: 8px; padding: 10px 14px; font-weight: 700; font-size: 17px; text-align: center; }
+.pipe span small { display: block; font-weight: 500; font-size: 12px; color: var(--muted); }
+.pipe span.hl { background: var(--accent); color: #fff; } .pipe span.hl small { color: #d9f3f0; }
+.pipe i { font-style: normal; color: var(--muted); font-size: 20px; }
+.chart { width: 100%; height: auto; }
+.chart .cl { font-size: 17px; font-weight: 700; fill: var(--ink); }
+.chart .cv { font-size: 15px; font-weight: 700; }
+.chart .bb { fill: var(--gray); } .chart .ba { fill: var(--accent); }
+.chart .bbt { fill: var(--muted); } .chart .bat { fill: var(--accent); }
+.legend { font-size: 15px; color: var(--muted); margin: -10px 0 8px; display: flex; align-items: center; gap: 8px; }
+.legend span { display: inline-block; width: 16px; height: 12px; border-radius: 2px; }
+.legend .lb { background: var(--gray); } .legend .la { background: var(--accent); margin-left: 14px; }
+.cover { background: var(--navy); color: #fff; display: flex; flex-direction: column; justify-content: center; padding: 80px 96px; }
+.cover h1 { font-size: 58px; font-weight: 800; line-height: 1.2; letter-spacing: -.02em; margin: 18px 0 22px; }
+.cover-kicker { font-size: 18px; font-weight: 700; color: #6fd6cb; letter-spacing: .04em; }
+.cover-sub { font-size: 22px; color: #c9d5e3; }
+.cover-meta { margin-top: 56px; font-size: 18px; color: #9fb1c6; }
+.cover.end { align-items: flex-start; }
+.grid3.tight { margin: 18px 0 0; gap: 16px; }
+.card .mid { font-size: 28px; font-weight: 800; color: var(--accent); }
+.grid3.tight .card { padding: 14px 18px; }
+.grid3.tight .cap { font-size: 14px; }
+.lead { font-size: 21px; line-height: 1.5; margin: -8px 0 22px; }
+.tag { display: inline-block; font-size: 13px; font-weight: 800; padding: 2px 8px; border-radius: 6px; white-space: nowrap; }
+.tag.up { background: #dbeafe; color: #1d4ed8; } .tag.add { background: var(--accent-soft); color: var(--accent); }
+.tag.keep { background: #eef1f4; color: var(--muted); }
+.t.tech td { font-size: 15.5px; padding: 8px 12px; }
+.t.compact td { font-size: 15px; padding: 6px 12px; }
+.shot { margin: 0; display: flex; flex-direction: column; align-items: flex-start; }
+.shot img { max-width: 100%; max-height: 455px; border-radius: 8px; border: 1px solid var(--line); object-fit: contain; object-position: left top; }
+.shot figcaption { font-size: 15px; line-height: 1.45; color: var(--ink); margin-top: 10px; }
+.grid2.shots { gap: 28px; align-items: start; }
+.final { display: grid; grid-template-columns: 1.55fr 1fr; gap: 24px; align-items: start; }
+.nums { display: grid; grid-template-columns: 1.25fr 1fr; gap: 24px; align-items: start; }
+.mcards { display: flex; flex-direction: column; gap: 9px; }
+.mcard { background: var(--accent-soft); border-radius: 10px; padding: 9px 16px; }
+.mcard .ml { font-size: 13px; color: var(--muted); font-weight: 700; }
+.mcard .mv { font-size: 22px; color: var(--ink); } .mcard .mv b { color: var(--accent); }
+.mcard .mn { font-size: 12.5px; color: var(--muted); }
+h3.next { margin-top: 16px; } .nextp { font-size: 16px; line-height: 1.5; }
+.shot.ui figcaption { margin: 0 0 8px; min-height: 44px; }
+.shot.ui img { border-radius: 0; border: none; max-height: none; width: 100%; }
+.shot.ui img.steps { border-radius: 8px 8px 0 0; }
+.shot.ui img.ans { border-radius: 0 0 8px 8px; max-height: 210px; object-fit: cover; object-position: left top; }
+.t td:first-child { white-space: nowrap; }
+</style></head><body><section class="slide cover">
+  <div class="cover-kicker">SKALA AI Mini-Project · 과제 1 (Base AI Agent 개선)</div>
+  <h1>장애 대응 에이전트,<br>키워드에서 의미 검색으로</h1>
+  <p class="cover-sub">RAG 기반 runbook 판별 · 하드코딩 제거 · 근거 검증 · 모듈화 · 자동 평가</p>
+  <div class="cover-meta">광주_1반_G030_최재은 &nbsp;|&nbsp; 2026.10.22</div>
+</section><section class="slide "><div class="kicker">01 · 주제</div><h2>운영 인시던트 대응 에이전트</h2>
+<p class="lead">운영자가 장애 증상을 채팅으로 물으면, 에이전트가 <b>모니터링 지표</b>와 <b>대응 매뉴얼(runbook)</b>을 직접 조사해 번호 절차로 조치를 답한다.</p>
+<div class="pipe">
+  <span>route<small>잡담/장애</small></span><i>→</i><span>plan<small>MCP Prompt</small></span><i>→</i><span>gate</span><i>→</i>
+  <span>research<small>MCP Tool·Resource</small></span><i>⇄</i><span class="hl">replan_check<small>runbook 판별</small></span><i>→</i>
+  <span>analysis</span><i>→</i><span>write</span><i>⇄</i><span class="hl">validate</span><i>→</i><span>finalize</span>
+</div>
+<div class="grid2">
+  <div><h3>베이스 구성</h3><ul>
+    <li>FastAPI + LangGraph StateGraph, SSE 스트리밍, Vue 채팅 UI</li>
+    <li>MCP 서버 2개(ops/docs) — 모니터링 Tool, runbook Resource, 진단 Prompt</li>
+    <li>LLM: OpenAI gpt-4o-mini(판단) / gpt-4o(답변 작성)</li></ul></div>
+  <div><h3>직접 돌려보며 찾은 약점</h3><ul>
+    <li>runbook을 <b>키워드 첫 매칭 1개</b>로 선택, 모르는 표현은 전부 <b>db-down</b></li>
+    <li>시스템명이 없으면 <b>무조건 auth-service</b> 진단</li>
+    <li>검증은 "30자 이상 + 1) 포함"만 확인</li>
+    <li>graph.py 단일 파일, 중복 코드 3곳, 테스트 0개</li></ul></div>
+</div><div class="foot">광주_1반_G030_최재은 · AI Mini-Project</div></section><section class="slide "><div class="kicker">02 · 기능 개선 및 추가 포인트</div><h2>무엇을 바꾸고 무엇을 더했나</h2>
+<table class="t">
+<tr><th>구분</th><th>항목</th><th>Before → After</th><th>위치</th></tr>
+<tr><td><span class="tag up">개선</span></td><td><b>RAG 기반 incident 판별</b></td><td>키워드 첫 매칭 1개 → runbook 임베딩 의미 검색, 저하된 시스템마다 판별</td><td><code>agent/rag/</code> <code>classifier.py</code></td></tr>
+<tr><td><span class="tag up">개선</span></td><td><b>하드코딩 제거</b></td><td>시스템명 없으면 auth-service → 시스템 카탈로그 검색, 미등록 시스템은 "모니터링 대상 아님"</td><td><code>nodes/planning.py</code></td></tr>
+<tr><td><span class="tag up">개선</span></td><td><b>근거 검증</b></td><td>형식만 검사 → 답변의 % 수치가 수집된 사실에 있는지 코드로 검사, 없으면 재작성</td><td><code>nodes/writing.py</code></td></tr>
+<tr><td><span class="tag up">개선</span></td><td><b>모듈화</b></td><td>graph.py 단일 파일 → 역할별 5개 모듈, 3곳 중복 코드 단일화</td><td><code>agent/nodes/</code> <code>systems.py</code></td></tr>
+<tr><td><span class="tag add">추가</span></td><td><b>데이터 보강</b></td><td>시스템 3종, 장애유형 2종(에러율 급증·인증서 만료), 시스템 카탈로그</td><td><code>data/</code></td></tr>
+<tr><td><span class="tag add">추가</span></td><td><b>자동 평가</b></td><td>라벨 24건 — 검색 정확도·지연·비용·retry + LLM-as-judge</td><td><code>eval/</code></td></tr>
+<tr><td><span class="tag add">추가</span></td><td><b>단위 테스트</b></td><td>28개, 가짜 MCP 주입으로 네트워크 없이 1초</td><td><code>tests/</code></td></tr>
+</table><div class="foot">광주_1반_G030_최재은 · AI Mini-Project</div></section><section class="slide "><div class="kicker">02 · 핵심 개선</div><h2>runbook 판별: 키워드 규칙 → 의미 검색</h2>
+<div class="grid2">
+<div><h3>Before — KeywordIncidentClassifier</h3>
+<pre>text = 모든 시스템 알림을 한 문자열로 합침
+for kw, type in RULES:      # latency, pool, cpu ...
+    if kw in text: return [type]   # 첫 매칭 1개
+return ["db-down"]          # 그 외 전부</pre>
+<h3>After — RagIncidentClassifier</h3>
+<pre>probes = [시스템별 알림 문장]  (없으면 사용자 질문)
+hits = kb.search(probes, kind="runbook", k=1)  # 임베딩 1회 batch
+→ 시스템마다 top-1 청크의 metadata.incident_type
+→ 중복 제거, 최대 3개 runbook을 MCP Resource로 조회</pre></div>
+<div><h3>지식베이스 (agent/rag)</h3><ul>
+<li>runbook 8종 → <b>요약 청크</b> + <b>절차 청크</b>, metadata에 incident_type</li>
+<li>text-embedding-3-small, 코사인 검색 (청크 55개라 외부 벡터DB 없이 구현)</li>
+<li>인덱스 디스크 캐시: 키 = (임베더, 코퍼스 해시) → 재기동 시 비용 0, runbook 수정 시 자동 재색인</li>
+<li>새 장애 유형 = <b>.md 파일 추가만</b> (코드 수정 없음)</li>
+<li><code>INCIDENT_CLASSIFIER=keyword|rag</code> 토글 → 같은 코드로 A/B 측정</li></ul></div>
+</div><div class="foot">광주_1반_G030_최재은 · AI Mini-Project</div></section><section class="slide "><div class="kicker">03 · 사용한 기술 요소</div><h2>기술 요소별 적용 내용</h2>
+<table class="t tech">
+<tr><th>기술</th><th>상태</th><th>이번 과제에서 한 일</th></tr>
+<tr><td><b>RAG</b></td><td><span class="tag add">신규</span></td><td>runbook·시스템 카탈로그 임베딩 검색. 검색 결과의 <b>메타데이터(incident_type)</b>만 쓰고 본문은 MCP로 조회</td></tr>
+<tr><td><b>MCP</b></td><td><span class="tag up">확장</span></td><td>Tool(모니터링)·Resource(runbook)·Prompt(진단 절차) 실호출. 보강한 시스템·runbook을 MCP 서버 데이터로 추가</td></tr>
+<tr><td><b>의존성 주입</b></td><td><span class="tag up">확장</span></td><td><code>SupervisorDeps</code>에 판별기·시스템 해석기·검증 토글 추가 → 환경변수로 교체, 테스트에서 가짜 MCP 주입</td></tr>
+<tr><td><b>모듈화</b></td><td><span class="tag add">신규</span></td><td>graph.py는 배선만(52줄), 노드는 <code>agent/nodes/</code> 5개 파일, RAG는 <code>agent/rag/</code> 3계층</td></tr>
+<tr><td><b>단위 테스트</b></td><td><span class="tag add">신규</span></td><td>pytest 28개 — 노드·RAG·그래프 전체 경로, 무한 루프 방지·미등록 시스템 처리</td></tr>
+<tr><td><b>Multi-Agent</b></td><td><span class="tag keep">기존 활용</span></td><td>Supervisor 그래프가 계획→조사→분석→작성→검수 역할에 task 분배, 판단(mini)·작성(4o) 모델 분리. RAG 판별기를 조사 단계에 연결</td></tr>
+<tr><td><b>LangSmith</b></td><td><span class="tag keep">기존 유지</span></td><td>모든 노드·LLM 호출에 <code>@traceable</code>. API 키가 없어 실측은 자체 평가 도구(eval/)로 지연·비용·정확도를 기록</td></tr>
+</table><div class="foot">광주_1반_G030_최재은 · AI Mini-Project</div></section><section class="slide "><div class="kicker">03 · 구현 기능 화면 ①</div><h2>RAG 판별 — 시스템명 없는 질문, 신규 장애유형</h2><div class="grid2 shots"><figure class="shot ui"><figcaption>“로그 저장 서버 용량이 꽉 찼대요” → 카탈로그 검색으로 <b>log-service</b>, RAG 판별로 <b>disk-full</b></figcaption><img class="steps" src="img/ui-after-1-steps.png"><img class="ans" src="img/ui-after-1-ans.png"></figure><figure class="shot ui"><figcaption>“order-service 배포하고 나서 에러가 엄청 나요” → 신규 runbook <b>error-rate-spike</b> (rag 판별)</figcaption><img class="steps" src="img/ui-after-2-steps.png"><img class="ans" src="img/ui-after-2-ans.png"></figure></div><div class="foot">광주_1반_G030_최재은 · AI Mini-Project</div></section><section class="slide "><div class="kicker">03 · 구현 기능 화면 ②</div><h2>미등록 시스템 처리 · 단위 테스트</h2><div class="grid2 shots"><figure class="shot ui"><figcaption>“billing-service 응답이 느려요” → 다른 시스템을 대신 진단하지 않고 <b>모니터링 대상 아님</b>, runbook 생략</figcaption><img class="steps" src="img/ui-after-3-steps.png"><img class="ans" src="img/ui-after-3-ans.png"></figure><figure class="shot tall"><img src="img/term-pytest.png"><figcaption><code>pytest -v</code> — 28 passed, 0.9초 (네트워크·API 키 없이 실행)</figcaption></figure></div><div class="foot">광주_1반_G030_최재은 · AI Mini-Project</div></section><section class="slide "><div class="kicker">03 · 최종 실행 화면</div><h2>OpenAI 백엔드 + Vue 채팅 UI (localhost:8600)</h2><div class="final"><figure class="shot "><img src="img/ui-after-1.png"><figcaption>채팅 UI — 진행 단계(계획·조사·RAG 판별·검수)가 SSE로 실시간 표시</figcaption></figure><figure class="shot "><img src="img/term-health.png"><figcaption>서버 상태 — <code>incident_classifier: rag</code>, 청크 55개, 인덱스 캐시 사용</figcaption></figure></div><div class="foot">광주_1반_G030_최재은 · AI Mini-Project</div></section><section class="slide "><div class="kicker">04 · Before / After — 같은 입력</div><h2>“로그 저장 서버 용량이 꽉 찼대요”</h2><div class="grid2 shots"><figure class="shot ui"><figcaption><span class="tag keep">Before 원본</span> auth-service를 조사하고 high-latency runbook으로 <b>엉뚱한 진단</b></figcaption><img class="steps" src="img/ui-before-1-steps.png"><img class="ans" src="img/ui-before-1-ans.png"></figure><figure class="shot ui"><figcaption><span class="tag add">After</span> log-service · disk-full — 디스크 정리 절차로 답변</figcaption><img class="steps" src="img/ui-after-1-steps.png"><img class="ans" src="img/ui-after-1-ans.png"></figure></div><div class="foot">광주_1반_G030_최재은 · AI Mini-Project</div></section><section class="slide "><div class="kicker">04 · Before / After — 같은 입력</div><h2>“order-service 배포하고 나서 에러가 엄청 나요”</h2><div class="grid2 shots"><figure class="shot ui"><figcaption><span class="tag keep">Before 원본</span> 키워드 미매칭 → <b>db-down</b> 폴백, DB failover 권고</figcaption><img class="steps" src="img/ui-before-2-steps.png"><img class="ans" src="img/ui-before-2-ans.png"></figure><figure class="shot ui"><figcaption><span class="tag add">After</span> RAG가 <b>error-rate-spike</b> 판별 → 직전 버전 롤백 권고</figcaption><img class="steps" src="img/ui-after-2-steps.png"><img class="ans" src="img/ui-after-2-ans.png"></figure></div><div class="foot">광주_1반_G030_최재은 · AI Mini-Project</div></section><section class="slide "><div class="kicker">04 · Before / After — 수치</div><h2>같은 24건, 같은 모델로 실측</h2><div class="nums"><figure class="shot "><img src="img/term-compare.png"><figcaption><code>eval/compare.py</code> 실행 결과 (가운데 열 = RAG만 끈 ablation)</figcaption></figure><div class="mcards"><div class="mcard"><div class="ml">검색 정확도 · runbook 재현율</div><div class="mv">34% → <b>84%</b></div><div class="mn">정밀도 53% → 92%</div></div><div class="mcard"><div class="ml">조사 대상 재현율</div><div class="mv">65% → <b>95%</b></div><div class="mn">정밀도 66% → 100%</div></div><div class="mcard"><div class="ml">장애 질의 평균 지연</div><div class="mv">5.47s → <b>5.09s</b></div><div class="mn">RAG 판별 1회 +233ms (편차 범위)</div></div><div class="mcard"><div class="ml">비용 (24건)</div><div class="mv">$0.0637 → <b>$0.0680</b></div><div class="mn">+6.8% (runbook을 더 많이 읽음)</div></div><div class="mcard"><div class="ml">retry · 재작성</div><div class="mv">1 · 1.00 → <b>1 · 1.00</b></div><div class="mn">MCP 재시도 횟수 · 평균 작성 시도</div></div></div></div><div class="foot">광주_1반_G030_최재은 · AI Mini-Project</div></section><section class="slide "><div class="kicker">04 · Before / After — 세트별</div><h2>어디서 좋아졌고, 그 대가는 얼마인가</h2>
+<div class="legend"><span class="lb"></span>Before <span class="la"></span>After</div><svg viewBox="0 0 1060 278" class="chart" role="img"><text x="0" y="34" class="cl">natural · runbook</text><rect x="230" y="10" width="2.0" height="20" rx="3" class="bb"/><text x="240.0" y="25" class="cv bbt">0%</text><rect x="230" y="34" width="525.0" height="20" rx="3" class="ba"/><text x="763.0" y="49" class="cv bat">75%</text><text x="0" y="96" class="cl">extended · runbook</text><rect x="230" y="72" width="87.5" height="20" rx="3" class="bb"/><text x="325.5" y="87" class="cv bbt">12%</text><rect x="230" y="96" width="612.5" height="20" rx="3" class="ba"/><text x="850.5" y="111" class="cv bat">88%</text><text x="0" y="158" class="cl">natural · 조사 대상</text><rect x="230" y="134" width="175.0" height="20" rx="3" class="bb"/><text x="413.0" y="149" class="cv bbt">25%</text><rect x="230" y="158" width="700.0" height="20" rx="3" class="ba"/><text x="938.0" y="173" class="cv bat">100%</text><text x="0" y="220" class="cl">extended · 조사 대상</text><rect x="230" y="196" width="437.5" height="20" rx="3" class="bb"/><text x="675.5" y="211" class="cv bbt">62%</text><rect x="230" y="220" width="612.5" height="20" rx="3" class="ba"/><text x="850.5" y="235" class="cv bat">88%</text></svg>
+<div class="grid3 tight">
+  <div class="card"><div class="mid">233 ms</div><div class="cap">RAG 판별 1회 중앙값 (p90 273ms) · 키워드 0.34ms</div></div>
+  <div class="card"><div class="mid">$0.0000005</div><div class="cap">판별 1회 임베딩 비용 — 질의당 LLM 비용(약 $0.003) 대비 무시 가능</div></div>
+  <div class="card"><div class="mid">34%</div><div class="cap">RAG만 끄면 runbook 재현율이 원본과 같음 → 개선분은 전부 RAG 기여</div></div>
+</div><div class="foot">광주_1반_G030_최재은 · AI Mini-Project</div></section><section class="slide "><div class="kicker">05 · 한계</div><h2>실측에서 드러난 실패 사례</h2>
+<table class="t">
+<tr><th>사례</th><th>무슨 일이 있었나</th><th>원인 · 조치</th></tr>
+<tr><td>게이트웨이 504<br>(B04 · N03)</td><td>"upstream timeout (504)"을 <b>error-rate-spike</b>로 판별 — 정답은 network-timeout</td><td>임베딩이 "504"를 5xx 에러와 가깝게 봄. runbook 문구를 평가셋에 맞추면 과적합이라 <b>고치지 않고 기록</b> → hybrid 검색 과제</td></tr>
+<tr><td>billing-service<br>(After v1)</td><td>미등록 시스템에 질문 문장만으로 runbook을 붙여 <b>없는 서비스에 롤백 권고</b></td><td>평가로 발견 → 조사 대상이 전부 미등록이면 runbook 생략, 테스트 추가 (정밀도 86.8→91.7%)</td></tr>
+<tr><td>"푸시 알림이<br>하나도 안 와요"</td><td>gpt-4o-mini 라우터가 잡담으로 분류 — Before/After 동일</td><td>라우팅은 이번 개선 범위 밖. 라우터 few-shot 보강 여지</td></tr>
+<tr><td>근거 없는 수치</td><td>Before/After 모두 0건 — gpt-4o는 수치를 지어내지 않음</td><td>grounding 검증 효과는 <b>실측 불가</b>, 단위 테스트로만 확인. 소형 로컬 모델로 재측정 필요</td></tr>
+<tr><td>LLM-judge</td><td>틀린 runbook을 쓴 답변에도 5점 — 점수가 천장에 붙음</td><td>정답 라벨 기반 지표(재현율·정밀도)를 주 지표로 사용</td></tr>
+</table><div class="foot">광주_1반_G030_최재은 · AI Mini-Project</div></section><section class="slide "><div class="kicker">05 · 한계 및 트레이드오프</div><h2>개선이 새로 만든 약점</h2>
+<table class="t compact">
+<tr><th>영역</th><th>새 약점</th><th>대응 / 현재 상태</th></tr>
+<tr><td>지연·비용</td><td>장애 질의마다 임베딩 호출 추가 (판별 1회 + 시스템 해석 최대 1회)</td><td>시스템 여러 개를 1회 batch로 묶고 인덱스 캐시. 비용은 무시 가능하나 왕복 약 230ms는 남음</td></tr>
+<tr><td>임계값</td><td>top-1을 항상 채택 → 엉뚱한 질문도 가장 가까운 runbook에 억지 매칭</td><td>RAG_MIN_SCORE 제공(기본 0) — 라벨 데이터로 보정 필요</td></tr>
+<tr><td>임베딩 의존</td><td>오프라인 hash 임베더는 영어 알림↔한국어 runbook 매칭 실패</td><td>임베딩 품질이 곧 판별 품질 — 다국어 로컬 임베딩으로 교체 여지</td></tr>
+<tr><td>루프 안전성</td><td>runbook 여러 개 조회 · 반려 시 재작성 → 루프 경로 증가</td><td>replan 1라운드, runbook 최대 3개, 재작성 최대 3회 상한</td></tr>
+<tr><td>평가셋</td><td>24건 · 본인 라벨링 · 1회 실행 — 통계적으로 약함</td><td>runbook에 알림 원문을 넣지 않아 누출 방지. 반복 실행·제3자 라벨 필요</td></tr>
+</table>
+<h3 class="next">다음 단계</h3>
+<p class="nextp">Human-in-the-loop 승인(<code>interrupt()</code>) · research를 전문 서브에이전트로 분리(Multi-Agent) · LangSmith 추적 연결 · hybrid 검색(BM25 + 임베딩)</p><div class="foot">광주_1반_G030_최재은 · AI Mini-Project</div></section><section class="slide cover end"><h1>감사합니다</h1>
+<p class="cover-sub">코드 · 평가 결과 · 문서: all_total_vue_student (README.md, eval/results, doc/)</p>
+<div class="cover-meta">광주_1반_G030_최재은</div></section></body></html>

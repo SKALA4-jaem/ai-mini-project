@@ -10,7 +10,7 @@
 | 4 | 그래프 개선 | Validator 근거 검증(grounding) | 답변의 % 수치가 수집된 사실(모니터링·runbook)에 실제로 있는지 코드로 검사, 없으면 반려·재작성 (기존: 30자 이상 + "1)" 포함만 검사) | 완료 |
 | 5 | 데이터 보강 | 신규 시스템 3종 + 신규 장애유형 2종 | order/search/notification-service, error-rate-spike·cert-expiry runbook. 키워드 규칙은 코드 수정 없이는 새 유형을 인식 못 함 → RAG는 .md 추가만으로 인식 | 완료 |
 | 6 | 평가 | 라벨 데이터셋 기반 자동 평가 + LLM-as-judge | eval/dataset.jsonl 24건(base/natural/extended/chat). route·target·runbook 정확도, 근거 없는 수치 비율, 지연, 비용, 재작성 횟수 + gpt-4o-mini 채점 | 완료 |
-| 7 | 테스트 | pytest 단위/통합 테스트 | DI 구조를 활용해 MCP를 InMemoryMCP로 교체 — 네트워크 없이 노드·그래프 검증 (27개) | 완료 |
+| 7 | 테스트 | pytest 단위/통합 테스트 | DI 구조를 활용해 MCP를 InMemoryMCP로 교체 — 네트워크 없이 노드·그래프 검증 (28개) | 완료 |
 | 8 | 그래프 개선 (선택) | Human-in-the-loop 승인 노드 | 재시작·롤백 등 위험 조치 포함 시 LangGraph interrupt()로 승인 요청 | Day2 예정 |
 
 **Before/After 측정 방법**: 개선 전 원본(`../baseline_original`, 데이터만 보강본으로 교체)과 개선 후 코드를
